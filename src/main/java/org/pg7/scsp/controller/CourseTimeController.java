@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * </p>
  *
  * @author helei
- * @since 2022-06-25
+ * @since 2022-06-26
  */
 @Controller
-@RequestMapping("/userInfo")
-public class UserInfoController {
+@RequestMapping("//courseTime")
+public class CourseTimeController {
 
 }
 

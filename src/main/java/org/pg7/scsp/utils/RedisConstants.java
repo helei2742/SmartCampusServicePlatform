@@ -14,4 +14,6 @@ public class RedisConstants {
      * 单位fen
      */
     public static final Long LOGIN_USER_TTL = 7L;
+    public static final String LOCK_NEWS_KEY = "lock:news:";
+    public static final String RANK_NEWS_KEY = "rank:news";
 }

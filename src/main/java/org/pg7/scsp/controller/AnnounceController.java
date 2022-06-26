@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Controller
 @RequestMapping("/announce")
-public class AnnounceController {
+public class AnnounceController implements BaseController{
     @Autowired
     private IAnnounceService announceService;
 
@@ -27,7 +27,7 @@ public class AnnounceController {
     @ResponseBody
     public Result addAnnounce(@RequestBody AnnounceFormDTO announceFormDTO){
         //TODO 校验是否有删除权限
-        boolean permission = announceService.checkPermission(announceFormDTO.getAuth());
+        boolean permission = this.checkPermission(announceFormDTO.getAuth());
         if(!permission){
             return Result.fail("权限不足！");
         }
@@ -40,7 +40,7 @@ public class AnnounceController {
     @ResponseBody
     public Result deleteAnnounce(@RequestBody AnnounceFormDTO announceFormDTO){
         //TODO 校验是否有删除权限
-        boolean permission = announceService.checkPermission(announceFormDTO.getAuth());
+        boolean permission = this.checkPermission(announceFormDTO.getAuth());
         if(!permission){
             return Result.fail("权限不足！");
         }
@@ -52,7 +52,7 @@ public class AnnounceController {
     @ResponseBody
     public Result updateAnnounce(@RequestBody AnnounceFormDTO announceFormDTO){
         //TODO 校验是否有删除权限
-        boolean permission = announceService.checkPermission(announceFormDTO.getAuth());
+        boolean permission = this.checkPermission(announceFormDTO.getAuth());
         if(!permission){
             return Result.fail("权限不足！");
         }
@@ -61,7 +61,7 @@ public class AnnounceController {
         return announceService.updateAnnounce(announceFormDTO);
     }
 
-    @PostMapping("/query")
+    @PostMapping("/pageQuery")
     @ResponseBody
     public Result deleteAnnounce(@RequestBody AnnounceQuery query){
 

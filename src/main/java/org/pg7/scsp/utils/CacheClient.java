@@ -35,7 +35,7 @@ public class CacheClient {
     }
 
     /**
-     * redis 逻辑延时插入
+     * redis 逻辑延时,插入
      * @param key   key值
      * @param value 原来的value值
      * @param time  延时

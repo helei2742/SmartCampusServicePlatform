@@ -11,6 +11,7 @@ import org.pg7.scsp.entity.Announce;
 import org.pg7.scsp.mapper.AnnounceMapper;
 import org.pg7.scsp.query.AnnounceQuery;
 import org.pg7.scsp.service.IAnnounceService;
+import org.pg7.scsp.utils.SystemConstants;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,17 +40,12 @@ public class AnnounceServiceImpl extends ServiceImpl<AnnounceMapper, Announce> i
 
         boolean isRemove = removeById(id);
         if(!isRemove){
-            Result.fail("删除失败");
+           return Result.fail("删除失败");
         }
         return Result.ok();
     }
 
-    @Override
-    public boolean checkPermission(String auth) {
-        //TODO 校验auth权限是否足够
 
-        return true;
-    }
 
     @Override
     public Result updateAnnounce(AnnounceFormDTO announceFormDTO) {
@@ -76,9 +72,9 @@ public class AnnounceServiceImpl extends ServiceImpl<AnnounceMapper, Announce> i
      */
     private Wrapper<Announce> getQueryWrapper(int type){
         QueryWrapper<Announce> wrapper = new QueryWrapper<Announce>();
-        if(type == AnnounceQuery.CREATETIMEDESC){
+        if(type == SystemConstants.CREATE_TIME_DESC){
             wrapper.orderByDesc("create_Time");
-        }else if(type == AnnounceQuery.CREATETIMEASC){
+        }else if(type == SystemConstants.CREATE_TIME_ASC){
             wrapper.orderByAsc("create_Time");
         }
         return wrapper;

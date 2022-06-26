@@ -1,5 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mapper.UserMapper">
+<mapper namespace="org.pg7.scsp.mapper.UserMapper">
 
+    <resultMap id="userInfoMap" type="org.pg7.scsp.dto.UserInfoDTO">
+        <id column="userId" property="userId" jdbcType="INTEGER"/>
+        <result column="idNumber" property="idNumber" jdbcType="VARCHAR"/>
+        <result column="trueName" property="trueName" jdbcType="VARCHAR"/>
+        <result column="ebg" property="ebg" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="chinaId" property="chinaId" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="homeAddress" property="homeAddress" jdbcType="VARCHAR"/>
+        <result column="dormitory" property="dormitory" jdbcType="VARCHAR"/>
+
+        <association property="major" javaType="org.pg7.scsp.entity.Major">
+            <id column="majorId" property="id" jdbcType="INTEGER"/>
+            <result column="majorName" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="collage" javaType="org.pg7.scsp.entity.Collage">
+            <id column="collageId" property="id" jdbcType="INTEGER"/>
+            <result column="collageName" property="name" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <select id="queryUserInfo" parameterType="java.lang.Integer" resultMap="userInfoMap">
+        select
+            u.id userId,
+            u.id_number idNumber,
+            u.true_name trueName,
+            u.ebg ebg,
+            u.icon icon,
+            ui.china_id chinaId,
+            ui.email email,
+            ui.phone phone,
+            ui.home_address homeAddress,
+            ui.dormitory dormitory,
+            m.id majorId,
+            m.name majorName,
+            c.id collageId,
+            c.name collageName
+        from tb_collage c
+                 left join tb_major m on c.id = m.college_id
+                 left join tb_user u on u.major_id = m.id
+                 left join tb_user_info ui on u.id = ui.user_id where u.id = #{userId};
+    </select>
+
+    <select id="queryUserInfoByIdNumber" resultMap="userInfoMap" parameterType="java.lang.String">
+        select
+            u.id userId,
+            u.id_number idNumber,
+            u.true_name trueName,
+            u.ebg ebg,
+            u.icon icon,
+            ui.china_id chinaId,
+            ui.email email,
+            ui.phone phone,
+            ui.home_address homeAddress,
+            ui.dormitory dormitory,
+            m.id majorId,
+            m.name majorName,
+            c.id collageId,
+            c.name collageName
+        from tb_collage c
+                 left join tb_major m on c.id = m.college_id
+                 left join tb_user u on u.major_id = m.id
+                 left join tb_user_info ui on u.id = ui.user_id where u.id_number = #{idNumber};
+    </select>
 </mapper>

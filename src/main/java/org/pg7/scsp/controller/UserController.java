@@ -5,6 +5,7 @@ package org.pg7.scsp.controller;
 import org.pg7.scsp.dto.LoginFormDTO;
 import org.pg7.scsp.dto.RegisterFormDTO;
 import org.pg7.scsp.dto.Result;
+import org.pg7.scsp.query.UserQuery;
 import org.pg7.scsp.service.IUserService;
 import org.pg7.scsp.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,14 @@ public class UserController {
         //TODO 用户注册
         return userService.register(registerFormDTO);
     }
+
+    @PostMapping("/userInfo")
+    @ResponseBody
+    public Result queryUserInfo(@RequestBody UserQuery userQuery){
+        //TODO 根据条件查询
+        return userService.queryUserInfo(userQuery);
+    }
+
 
 }
 

@@ -30,12 +30,6 @@ public interface IAnnounceService extends IService<Announce> {
      */
     Result deleteAnnounce(AnnounceFormDTO announceFormDTO);
 
-    /**
-     * 检测auth的权限是否可以改变公告内容
-     * @param auth
-     * @return
-     */
-    boolean checkPermission(String auth);
 
     /**
      * 更新公告

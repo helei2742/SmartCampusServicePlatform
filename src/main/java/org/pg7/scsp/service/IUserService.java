@@ -5,6 +5,7 @@ import org.pg7.scsp.dto.LoginFormDTO;
 import org.pg7.scsp.dto.RegisterFormDTO;
 import org.pg7.scsp.dto.Result;
 import org.pg7.scsp.entity.User;
+import org.pg7.scsp.query.UserQuery;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,4 +38,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     Result register(RegisterFormDTO registerFormDTO);
+
+    /**
+     * 查询用户所有基本信息
+     * @param userQuery
+     * @return
+     */
+    Result queryUserInfo(UserQuery userQuery);
 }

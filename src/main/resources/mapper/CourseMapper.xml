@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.pg7.scsp.mapper.CourseMapper">
+
+    <resultMap id="courseAllInfoMap" type="org.pg7.scsp.dto.CourseDTO">
+        <id column="courseId" property="id" jdbcType="INTEGER"/>
+        <result column="courseName" property="courseName" jdbcType="VARCHAR"/>
+        <result column="credit" property="credit" jdbcType="VARCHAR"/>
+        <result column="detail" property="detail" jdbcType="VARCHAR"/>
+
+        <collection property="courseTimeList" ofType="org.pg7.scsp.entity.CourseTime">
+            <id column="timeId" property="id" jdbcType="INTEGER"/>
+            <result column="timeDay" property="day" jdbcType="INTEGER"/>
+            <result column="timeSt" property="startTime" jdbcType="TIME"/>
+            <result column="timeEt" property="endTime" jdbcType="TIME"/>
+        </collection>
+
+        <collection property="teacherList" ofType="org.pg7.scsp.entity.User">
+            <id column="teacherId" property="id" jdbcType="INTEGER"/>
+            <result column="idNumber" property="idNumber" jdbcType="VARCHAR"/>
+            <result column="name" property="trueName" jdbcType="VARCHAR"/>
+            <result column="ebg" property="ebg" jdbcType="VARCHAR"/>
+            <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryAllCourseAllInfo" resultMap="courseAllInfoMap">
+        select
+            ct.id timeId,
+            ct.day timeDay,
+            ct.start_time timeSt,
+            ct.end_time timeEt,
+            c.id courseId,
+            c.course_name courseName,
+            c.credit credit,
+            c.detail detail,
+            tu.id teacherId,
+            tu.id_number idNumber,
+            tu.true_name name,
+            tu.ebg ebg,
+            tu.icon icon
+        from tb_course_time ct
+                 left join tb_course_course_time cct on ct.id = cct.course_time_id
+                 right join tb_course c on cct.course_id = c.id
+                 left join tb_course_teacher ctea on c.id = ctea.course_id
+                 left join tb_user tu on ctea.teacher_id = tu.id
+        where
+            c.deleted = 0
+    </select>
+
+    <select id="queryCourseAllInfoByTeacherId" resultMap="courseAllInfoMap">
+        select
+            ct.id timeId,
+            ct.day timeDay,
+            ct.start_time timeSt,
+            ct.end_time timeEt,
+            c.id courseId,
+            c.course_name courseName,
+            c.credit credit,
+            c.detail detail,
+            tu.id teacherId,
+            tu.id_number idNumber,
+            tu.true_name name,
+            tu.ebg ebg,
+            tu.icon icon
+        from tb_course_time ct
+                 left join tb_course_course_time cct on ct.id = cct.course_time_id
+                 right join tb_course c on cct.course_id = c.id
+                 left join tb_course_teacher ctea on c.id = ctea.course_id
+                 left join tb_user tu on ctea.teacher_id = tu.id
+        where
+            c.deleted = 0
+        and
+            tu.deleted = 0
+        and
+            tu.id = #{teacherId}
+    </select>
+</mapper>

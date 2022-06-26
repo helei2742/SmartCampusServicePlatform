@@ -5,21 +5,21 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import org.pg7.scsp.dto.LoginFormDTO;
-import org.pg7.scsp.dto.RegisterFormDTO;
-import org.pg7.scsp.dto.Result;
-import org.pg7.scsp.dto.UserDTO;
+import org.pg7.scsp.dto.*;
 import org.pg7.scsp.entity.User;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.pg7.scsp.mapper.UserMapper;
+import org.pg7.scsp.query.UserQuery;
 import org.pg7.scsp.service.IUserService;
 import org.pg7.scsp.utils.RedisConstants;
 
+import org.pg7.scsp.utils.SystemConstants;
 import org.pg7.scsp.utils.ValidateCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -38,6 +38,10 @@ import java.util.concurrent.TimeUnit;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Resource
+    private UserMapper userMapper;
+
 
     @Override
     public Result getCaptchaImg(String idNumber, HttpServletResponse response) {
@@ -109,6 +113,39 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Result register(RegisterFormDTO registerFormDTO) {
         return null;
+    }
+
+    @Override
+    public Result queryUserInfo(UserQuery userQuery) {
+        int type = userQuery.getQueryType();
+
+        if(type == SystemConstants.QUERY_USERINFO_BY_ID){
+            Integer userId = userQuery.getUserId();
+            if(userId == null || userId < 0){
+                return Result.fail("用户id不合法！！");
+            }
+            UserInfoDTO userInfoDTO = userMapper.queryUserInfo(userId);
+
+            if(this.isUserInfoDTONull(userInfoDTO)){
+                return Result.fail("查询学生信息失败！不存在该学生信息");
+            }
+            return Result.ok(userInfoDTO);
+        }else if(type == SystemConstants.QUERY_USERINFO_BY_IDNUMBER){
+            String idNumber = userQuery.getIdNumber();
+            if(StrUtil.isBlank(idNumber)){
+                return Result.fail("学工号　不合法！！");
+            }
+            UserInfoDTO userInfoDTO = userMapper.queryUserInfoByIdNumber(idNumber);
+            if(this.isUserInfoDTONull(userInfoDTO)){
+                return Result.fail("查询学生信息失败！不存在该学生信息");
+            }
+            return Result.ok(userInfoDTO);
+        }
+        return null;
+    }
+
+    private boolean isUserInfoDTONull(UserInfoDTO userInfoDTO){
+        return userInfoDTO == null || StrUtil.isBlank(userInfoDTO.getIdNumber());
     }
 
 }
