@@ -4,12 +4,16 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import org.junit.jupiter.api.Test;
 import org.pg7.scsp.dto.UserDTO;
+import org.pg7.scsp.entity.Collage;
 import org.pg7.scsp.entity.User;
+import org.pg7.scsp.mapper.CollageMapper;
 import org.pg7.scsp.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
@@ -38,5 +42,12 @@ class ScspApplicationTests {
     }
 
 
+@Resource
+    CollageMapper collageMapper;
 
+    @Test
+    void test2(){
+        List<Collage> collages = collageMapper.selectList(null);
+        System.out.println(collages);
+    }
 }

@@ -25,7 +25,7 @@ public class CourseTime {
 
 
       @ApiModelProperty("课程时间对应的序号")
-        @TableId(value = "id", type = IdType.AUTO)
+      @TableId(value = "id", type = IdType.AUTO)
       private Integer id;
 
       @ApiModelProperty("课程是星期几")

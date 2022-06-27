@@ -1,6 +1,7 @@
 package org.pg7.scsp.utils;
 
 public class SystemConstants {
+    public static final int DEFAULT_PAGE_SIZE = 20;
 
 
     /**
@@ -34,9 +35,9 @@ public class SystemConstants {
     public static final int QUERY_USERINFO_BY_ID = 7;
     public static final int QUERY_USERINFO_BY_IDNUMBER = 8;
 
+
     /**
-     * 查询课程所有信息
+     * 条件分页查询课程全部信息
      */
-    public static final Integer QUERY_ALL_COURSE_ALLINFO = 9;
-    public static final Integer QUERY_COURSE_ALLINFO_BY_TEACHERID = 10;
+    public static final Integer CONDITION_QUERY_PAGE_COURSE_ALLINFO = 9;
 }

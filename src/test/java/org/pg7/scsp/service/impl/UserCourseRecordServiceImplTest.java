@@ -17,7 +17,7 @@ class UserCourseRecordServiceImplTest {
     @Test
     void queryUserCourseRecord() {
         CourseQuery courseQuery = new CourseQuery();
-        courseQuery.setUserId(1011);
+        courseQuery.setUserId(1179);
         Result result = userCourseRecordService.queryUserCourseRecord(courseQuery);
         System.out.println(result);
     }

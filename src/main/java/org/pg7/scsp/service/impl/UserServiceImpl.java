@@ -81,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 //        String sessionCode = (String) session.getAttribute(SystemConstants.LOGINCHECKCODE);
         String redisCode = stringRedisTemplate.opsForValue().get(RedisConstants.LOGIN_CHECKCODE_KEY + idNumber);
 
-        if(!checkCode.equals(redisCode)){
+        if(!checkCode.equalsIgnoreCase(redisCode)){
             return Result.fail("验证码错误！");
         }
 

@@ -7,10 +7,7 @@ import org.pg7.scsp.service.ICourseService;
 import org.pg7.scsp.service.IUserCourseRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -26,57 +23,38 @@ public class CourseController {
 
     @Autowired
     private ICourseService courseService;
-    @Autowired
-    private IUserCourseRecordService userCourseRecordService;
 
-    @PostMapping("/queryCourse")
+
+    @PostMapping("/conditionPageQueryCourse")
     @ResponseBody
     public Result queryCourse(@RequestBody CourseQuery courseQuery){
         //TODO  根据条件查询课程
-        return courseService.queryCourse(courseQuery);
+        return courseService.conditionPageQueryCourse(courseQuery);
     }
 
 
-    @PostMapping("/queryUserCourseRecord")
+    @PostMapping("/currentSemesterCourse")
     @ResponseBody
-    public Result queryUserCourseRecord(@RequestBody CourseQuery courseQuery) {
-        //TODO 查询用户的选课记录
-        return userCourseRecordService.queryUserCourseRecord(courseQuery);
+    public Result currentSemesterCourse(){
+        // TODO 带有缓存的查询当前学期课程
+
+        return courseService.currentSemesterCourse();
     }
 
-    @PostMapping("/queryUserPassCourse")
+    @PostMapping("/queryCSTCourseByName")
     @ResponseBody
-    public Result queryUserPassCourse(@RequestBody CourseQuery courseQuery){
-        //TODO 查询用户已通过的课程
-        return userCourseRecordService.queryUserPassCourse(courseQuery);
+    public Result queryCSTCourseByName(@RequestParam("courseName") String courseName) {
+        // TODO 带有缓存的查询当前学期的课程的名字教courseName的课程
+        return courseService.queryCSTCourseByName(courseName);
     }
 
-    @PostMapping("/queryUserUnPassCourse")
+    @PostMapping("/queryCSTCourseByCollage")
     @ResponseBody
-    public Result queryUserUnPassCourse(@RequestBody CourseQuery courseQuery){
-        //TODO 查询用户未通过的课程
-        return userCourseRecordService.queryUserUnPassCourse(courseQuery);
+    public Result queryCSTCourseByCollage(@RequestParam("collageName")String collageName) {
+        // TODO 带有缓存的查询当前学期的课程的collageName学院的
+        return courseService.queryCSTCourseByCollageName(collageName);
     }
 
-    @PostMapping("/queryUserCredit")
-    @ResponseBody
-    public Result UserHaveCredit(@RequestBody CourseQuery courseQuery){
-        //TODO 查询用户的学分情况
-        return userCourseRecordService.queryUserCredit(courseQuery);
-    }
-
-    @PostMapping("/queryUserTotalCredit")
-    @ResponseBody
-    public Result UserHaveTotalCredit(@RequestBody CourseQuery courseQuery){
-        //TODO 查询用户通过的总学分
-        return userCourseRecordService.queryUserTotalCredit(courseQuery);
-    }
-    @PostMapping("/queryUserTotalUnPassCredit")
-    @ResponseBody
-    public Result UserHaveTotalUnPassCredit(@RequestBody CourseQuery courseQuery){
-        //TODO 查询用户未通过的总学分
-        return userCourseRecordService.queryUserTotalUnPassCredit(courseQuery);
-    }
 
 }
 

@@ -2,11 +2,57 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.pg7.scsp.mapper.CourseMapper">
 
+
+<!--
     <resultMap id="courseAllInfoMap" type="org.pg7.scsp.dto.CourseDTO">
         <id column="courseId" property="id" jdbcType="INTEGER"/>
         <result column="courseName" property="courseName" jdbcType="VARCHAR"/>
         <result column="credit" property="credit" jdbcType="VARCHAR"/>
         <result column="detail" property="detail" jdbcType="VARCHAR"/>
+        <result column="semester" property="semester" jdbcType="VARCHAR"/>
+        <result column="majorId" property="majorId" jdbcType="VARCHAR"/>
+
+        <collection property="courseTimeList" ofType="org.pg7.scsp.entity.CourseTime"
+                    select="queryCourseTimeList" column="{courseId=id}">
+
+            <id column="idd" property="id" jdbcType="INTEGER"/>
+            <result column="day" property="day" jdbcType="INTEGER"/>
+            <result column="start_time" property="startTime" jdbcType="TIME"/>
+            <result column="end_time" property="endTime" jdbcType="TIME"/>
+        </collection>
+
+        <collection property="teacherList" ofType="org.pg7.scsp.entity.User"
+                    select="queryCourseTeacher" column="{courseId=id}">
+            <id column="id" property="id" jdbcType="INTEGER"/>
+            <result column="id_number" property="idNumber" jdbcType="VARCHAR"/>
+            <result column="true_name" property="trueName" jdbcType="VARCHAR"/>
+            <result column="ebg" property="ebg" jdbcType="VARCHAR"/>
+            <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+    <select id="queryCourseTimeList" parameterType="java.util.Map" resultType="java.util.Map">
+        select ct.* from tb_course_course_time cct
+               inner join tb_course_time ct on cct.course_time_id = ct.id
+               where course_id = #{courseId};
+    </select>
+
+    <select id="queryCourseTeacher" parameterType="java.util.Map" resultType="java.util.Map">
+        select u.id, u.id_number, u.true_name, u.ebg,u.icon from tb_course_teacher ct
+            inner join tb_user u on ct.teacher_id = u.id
+                   where ct.course_id = #{courseId};
+    </select>
+
+    <select id="queryAllCourseAllInfo" resultMap="courseAllInfoMap">
+        select * from tb_course
+    </select>-->
+
+    <resultMap id="courseAllInfoMap" type="org.pg7.scsp.dto.CourseDTO">
+        <id column="courseId" property="id" jdbcType="INTEGER"/>
+        <result column="courseName" property="courseName" jdbcType="VARCHAR"/>
+        <result column="credit" property="credit" jdbcType="VARCHAR"/>
+        <result column="detail" property="detail" jdbcType="VARCHAR"/>
+        <result column="semester" property="semester" jdbcType="VARCHAR"/>
+        <result column="majorId" property="majorId" jdbcType="VARCHAR"/>
 
         <collection property="courseTimeList" ofType="org.pg7.scsp.entity.CourseTime">
             <id column="timeId" property="id" jdbcType="INTEGER"/>
@@ -23,8 +69,7 @@
             <result column="icon" property="icon" jdbcType="VARCHAR"/>
         </collection>
     </resultMap>
-
-    <select id="queryAllCourseAllInfo" resultMap="courseAllInfoMap">
+    <sql id="allInfoSelectFrom">
         select
             ct.id timeId,
             ct.day timeDay,
@@ -34,6 +79,8 @@
             c.course_name courseName,
             c.credit credit,
             c.detail detail,
+            c.semester semester,
+            c.major_id majorId,
             tu.id teacherId,
             tu.id_number idNumber,
             tu.true_name name,
@@ -44,35 +91,81 @@
                  right join tb_course c on cct.course_id = c.id
                  left join tb_course_teacher ctea on c.id = ctea.course_id
                  left join tb_user tu on ctea.teacher_id = tu.id
+    </sql>
+<!--    查询全部-->
+    <select id="queryAllCourseAllInfo" resultMap="courseAllInfoMap">
+        <include refid="allInfoSelectFrom"></include>
         where
             c.deleted = 0
     </select>
 
     <select id="queryCourseAllInfoByTeacherId" resultMap="courseAllInfoMap">
-        select
-            ct.id timeId,
-            ct.day timeDay,
-            ct.start_time timeSt,
-            ct.end_time timeEt,
-            c.id courseId,
-            c.course_name courseName,
-            c.credit credit,
-            c.detail detail,
-            tu.id teacherId,
-            tu.id_number idNumber,
-            tu.true_name name,
-            tu.ebg ebg,
-            tu.icon icon
-        from tb_course_time ct
-                 left join tb_course_course_time cct on ct.id = cct.course_time_id
-                 right join tb_course c on cct.course_id = c.id
-                 left join tb_course_teacher ctea on c.id = ctea.course_id
-                 left join tb_user tu on ctea.teacher_id = tu.id
+        <include refid="allInfoSelectFrom"></include>
         where
             c.deleted = 0
         and
             tu.deleted = 0
         and
             tu.id = #{teacherId}
+    </select>
+
+    <select id="querySemesterAllCourseAllInfo" resultMap="courseAllInfoMap">
+        <include refid="allInfoSelectFrom"></include>
+        where
+            c.deleted = 0
+        and
+            c.semester = #{semester}
+    </select>
+
+    <insert id="setCourseTime" parameterType="java.lang.Integer">
+        insert into tb_course_course_time set course_id = #{courseId}, course_time_id = #{courseTimeId}
+    </insert>
+
+    <insert id="setCourseTeacher" parameterType="java.lang.Integer">
+        insert into tb_course_teacher set course_id = #{courseId}, teacher_id = #{teacherId}
+    </insert>
+
+    <select id="queryTotalCountCourse" resultType="java.lang.Integer">
+        select count(id)
+        from tb_course;
+    </select>
+
+<!--    分页查询-->
+    <select id="conditionQueryAllCourseAllInfo" parameterType="org.pg7.scsp.query.CourseQuery"
+            resultMap="courseAllInfoMap">
+        <include refid="allInfoSelectFrom"></include>
+        <where>
+            c.deleted = 0
+            <if test="teacherId != null">
+                and tu.id = #{teacherId}
+            </if>
+            <if test="semester != null">
+                and c.semester = #{semester}
+            </if>
+            <if test="majorId != null">
+                and c.major_id = #{majorId}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="queryBySemesterAndName" resultMap="courseAllInfoMap">
+        <include refid="allInfoSelectFrom"></include>
+        where
+            c.deleted = 0
+        and
+            c.course_name = #{courseName}
+        and
+            c.semester = #{semester}
+    </select>
+
+    <select id="queryBySemesterAndCollageName" resultMap="courseAllInfoMap">
+        <include refid="allInfoSelectFrom"></include>
+        where
+            c.deleted = 0
+        and
+            c.semester = #{semester}
+        and
+        c.major_id in (select b.id from tb_collage a left join tb_major b  on a.id = b.college_id where a.name = #{collageName});
     </select>
 </mapper>

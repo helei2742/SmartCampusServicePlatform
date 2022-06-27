@@ -10,4 +10,15 @@ public class CourseQuery extends BaseQuery{
 
     private Integer userId;
 
+    private String semester;
+
+    private Integer majorId;
+
+    private Boolean isPass;
+
+    private String courseName;
+
+    private Integer count;
+
+    private Boolean isFirst;
 }

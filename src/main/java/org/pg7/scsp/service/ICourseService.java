@@ -16,11 +16,47 @@ import org.pg7.scsp.query.CourseQuery;
 public interface ICourseService extends IService<Course> {
 
     /**
-     * 根据条件查询课程
-     *      当queryType为 9时，查询全部课程的全部课程信息
-     *      当queryType为 10时。查询老师对应id当全部课程信息
+     * 根据条件分页查询课程
+     *      基本的条件查询参数
+     *          page， size
+     *     queryType需为9
+     *      其他参数
+     *     private Integer teacherId;
+     *
+     *     private String semester;
+     *
+     *     private Integer major;
+     *         需要条件时带入即可
+     *      不含以上条件则分页查询所有
      * @param courseQuery
      * @return
      */
-    Result queryCourse(CourseQuery courseQuery);
+    Result conditionPageQueryCourse(CourseQuery courseQuery);
+
+
+    /**
+     * 查询课程总数
+     * @return
+     */
+    Result queryTotalCountCourse();
+
+    /**
+     * 查询当前学期的课程，添加有缓存，选课阶段使用。
+     * @return
+     */
+    Result currentSemesterCourse();
+
+    /**
+     * 带缓存的查找当前学期的该课程名的课程
+     * @param courseName
+     * @return
+     */
+    Result queryCSTCourseByName(String courseName);
+
+    /**
+     * 带有缓存的查询当前学期的课程的collageName学院的
+     * @param collageName
+     * @return
+     */
+    Result queryCSTCourseByCollageName(String collageName);
 }

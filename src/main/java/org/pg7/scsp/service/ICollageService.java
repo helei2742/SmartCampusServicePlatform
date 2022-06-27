@@ -13,4 +13,6 @@ import org.pg7.scsp.entity.Collage;
  */
 public interface ICollageService extends IService<Collage> {
 
+
+
 }

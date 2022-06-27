@@ -12,6 +12,10 @@ public class CourseDTO {
 
     private String courseName;
 
+    private String semester;
+
+    private Integer majorId;
+
     private Float credit;
 
     private String detail;

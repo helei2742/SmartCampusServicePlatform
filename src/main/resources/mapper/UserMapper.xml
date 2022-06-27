@@ -67,4 +67,8 @@
                  left join tb_user u on u.major_id = m.id
                  left join tb_user_info ui on u.id = ui.user_id where u.id_number = #{idNumber};
     </select>
+
+    <insert id="setUserRole" parameterType="java.lang.Integer">
+        insert into tb_user_role set user_id = #{userId},role_id = #{roleId};
+    </insert>
 </mapper>

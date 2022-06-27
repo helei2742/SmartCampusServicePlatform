@@ -13,13 +13,11 @@
 
     </select>
     <select id="queryUserUnPassCredit" resultType="java.util.Map">
-        select c.id course_id, c.course_name courseName, c.credit
-        from tb_course  c
-        where c.id not in (select a.course_id
-                       from tb_user_course_record a
-                       where a.user_id = #{userId}
-                         and score >= 60
-                       group by  course_id)
+        select c.id course_id, c.course_name courseName, c.credit from tb_course c where
+
+                c.id not in (select a.course_id from tb_user_course_record a where a.user_id = 1 and 60 > score group by course_id)
+                and
+                c.id in (select a.course_id from tb_user_course_record a where a.user_id = 1 group by course_id);
 
     </select>
 

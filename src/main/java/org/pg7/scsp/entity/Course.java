@@ -31,6 +31,11 @@ public class Course {
       @ApiModelProperty("学分")
       private Float credit;
 
+    @ApiModelProperty("学期")
+    private String semester;
+
+    @ApiModelProperty("专业id")
+    private Integer majorId;
       @ApiModelProperty("课程详情")
       private String detail;
 

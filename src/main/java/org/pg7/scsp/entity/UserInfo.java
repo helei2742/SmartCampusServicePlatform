@@ -29,7 +29,7 @@ public class UserInfo {
       private Integer userId;
 
       @ApiModelProperty("身份证号")
-      private Integer chinaId;
+      private String chinaId;
 
       @ApiModelProperty("邮箱")
       private String email;
