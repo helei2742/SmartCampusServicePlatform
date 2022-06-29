@@ -168,8 +168,10 @@ public class foot {
         userCourseRecord.setSemester(semester);
         return userCourseRecord;
     }
+
     @Test
     void startFoot(){
+        //TODO 插入基本但学院信息，专业信息，老师学生信息，课程信息，学生的选课信息。
 
         //生成5个学院，插入取出
         Collage collage = new Collage();
@@ -293,6 +295,9 @@ public class foot {
 
     @Test
     public void setRetakeCourse(){
+        //TODO 对学生选的课按课程名分组后学期排序，然后将选课次数依次加1，表示第几次选该课
+
+
         //查询用户
         List<User> users = userMapper.selectList(null);
         //遍历用户
@@ -340,6 +345,8 @@ public class foot {
     SeckillCourseMapper seckillCourseMapper;
     @Test
     public void setSeckillCourse(){
+        //TODO 设置当前学期选课表，并删除之前随机生成到的当前学期的选课记录
+
         String currentSemester = SemesterUtil.getCurrentSemester();
 
 
@@ -369,6 +376,9 @@ public class foot {
 
     @Test
     public void setCourseTest(){
+
+        //TODO 设置考试课程
+
 //        String currentSemester = SemesterUtil.getCurrentSemester();
 
 
@@ -401,10 +411,11 @@ public class foot {
 
     @Test
     public void setUserTestRecord(){
+        //TODO 对考试添加考试的学生（选了该课的就会被添加）
+
         QueryWrapper<CourseTest> courseTestQueryWrapper = new QueryWrapper<>();
         courseTestQueryWrapper.eq("test_type", SystemConstants.COURSE_TEST_TYPE_MID);
 //        courseTestQueryWrapper.eq("test_type", SystemConstants.COURSE_TEST_TYPE_END);
-//        courseTestQueryWrapper.eq("test_type", SystemConstants.COURSE_TEST_TYPE_Re);
         List<CourseTest> courseTests = courseTestMapper.selectList(courseTestQueryWrapper);
 
         for (CourseTest courseTest : courseTests) {
@@ -424,6 +435,7 @@ public class foot {
                 userTestRecord.setTestId(courseTest.getId());
                 userTestRecord.setScore((float) RandomUtil.randomDouble(0,100));
 
+                //TODO 设置考试状态
 //                userTestRecord.setStatus(SystemConstants.COURSE_TEST_RECORD_STATUS_UNSTART);
 //                userTestRecord.setStatus(SystemConstants.COURSE_TEST_RECORD_STATUS_UNJOIN);
                 userTestRecord.setStatus(SystemConstants.COURSE_TEST_RECORD_STATUS_JOINED);
@@ -439,12 +451,14 @@ public class foot {
 
     @Test
     public void createCourseReTest(){
+
+        //TODO 对有不及格学生对期末考试的考试创建补考，并给不及格的学生添加起对应不及格考试的补考
+
         List<CourseTest> courseTests = courseTestMapper.selectList(null);
         for (CourseTest courseTest : courseTests) {
             CourseTestFormDTO courseTestFormDTO = new CourseTestFormDTO();
 
             courseTestFormDTO.setCourseId(courseTest.getCourseId());
-
             courseTestFormDTO.setStartTime(LocalDateTime.now());
             courseTestFormDTO.setEndTime(LocalDateTime.now().plusDays(7));
             courseTestFormDTO.setLocation(RandomUtil.randomString("补考场地",10));
@@ -454,39 +468,4 @@ public class foot {
 
     }
 
-    @Test
-    public void test(){
-        //查询用户选的全部课程
-        QueryWrapper<UserCourseRecord> queryWrapper= new QueryWrapper<>();
-        queryWrapper.eq("user_id", 1);
-        List<UserCourseRecord> list = userCourseRecordMapper.selectList(queryWrapper);
-
-        HashMap<String, List<UserCourseRecord>> map = new HashMap<>();
-
-        for (UserCourseRecord userCourseRecord : list) {
-            String courseName = userCourseRecord.getCourseName();
-            if(!map.containsKey(courseName)){
-                map.put(courseName, new ArrayList<>());
-            }
-            map.get(courseName).add(userCourseRecord);
-        }
-
-        List<HashMap<String, Object>> res = new ArrayList<>();
-        Set<String> keySet = map.keySet();
-        for (String key : keySet) {
-            HashMap<String, Object> t = new HashMap<>();
-            t.put("courseName", key);
-            t.put("recordList", map.get(key));
-            res.add(t);
-        }
-
-        for (HashMap<String, Object> re : res) {
-            System.out.println(re);
-        }
-    }
-
-    @Test
-    void test2(){
-        System.out.println("2022年春季学期".compareTo("2022年秋季学期"));
-    }
 }
