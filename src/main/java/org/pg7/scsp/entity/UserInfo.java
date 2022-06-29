@@ -1,9 +1,6 @@
 package org.pg7.scsp.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -26,7 +23,8 @@ public class UserInfo {
 
 
 
-      private Integer userId;
+    @TableId(value = "user_id")
+    private Integer userId;
 
       @ApiModelProperty("身份证号")
       private String chinaId;

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.pg7.scsp.dto.LoginFormDTO;
 import org.pg7.scsp.dto.RegisterFormDTO;
 import org.pg7.scsp.dto.Result;
+import org.pg7.scsp.dto.UserFormDto;
 import org.pg7.scsp.entity.User;
 import org.pg7.scsp.query.UserQuery;
 
@@ -45,4 +46,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     Result queryUserInfo(UserQuery userQuery);
+
+    /**
+     * 修改用户信息，根据userId
+     * @param userFormDto
+     * @return
+     */
+    Result alterUserInfo(UserFormDto userFormDto);
 }

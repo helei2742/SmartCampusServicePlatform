@@ -5,6 +5,7 @@ package org.pg7.scsp.controller;
 import org.pg7.scsp.dto.LoginFormDTO;
 import org.pg7.scsp.dto.RegisterFormDTO;
 import org.pg7.scsp.dto.Result;
+import org.pg7.scsp.dto.UserFormDto;
 import org.pg7.scsp.query.UserQuery;
 import org.pg7.scsp.service.IUserService;
 import org.pg7.scsp.service.impl.UserServiceImpl;
@@ -70,5 +71,12 @@ public class UserController {
     }
 
 
+    @PostMapping("/alterUserInfo")
+    @ResponseBody
+    public Result alterUserInfo(@RequestBody UserFormDto userFormDto){
+        //TODO 修改用户信息
+
+        return userService.alterUserInfo(userFormDto);
+    }
 }
 

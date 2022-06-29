@@ -8,8 +8,10 @@ import cn.hutool.json.JSONUtil;
 import org.pg7.scsp.dto.*;
 import org.pg7.scsp.entity.User;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.pg7.scsp.entity.UserInfo;
 import org.pg7.scsp.mapper.UserMapper;
 import org.pg7.scsp.query.UserQuery;
+import org.pg7.scsp.service.IUserInfoService;
 import org.pg7.scsp.service.IUserService;
 import org.pg7.scsp.utils.RedisConstants;
 
@@ -140,6 +142,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.ok(userInfoDTO);
         }
         return null;
+    }
+
+    @Autowired
+    IUserInfoService userInfoService;
+
+    @Override
+    public Result alterUserInfo(UserFormDto userFormDto) {
+        Integer userId = userFormDto.getUserId();
+        if(userId == null){
+            return Result.fail("用户id不能为空");
+        }
+
+        User user = getById(userId);
+        if(user == null){
+            return Result.fail("不存在该用户");
+        }
+
+        UserInfo userInfo = BeanUtil.copyProperties(userFormDto, UserInfo.class);
+        boolean b = userInfoService.updateById(userInfo);
+        if(!b){
+            return Result.fail("更新失败");
+        }
+        return Result.ok();
     }
 
     private boolean isUserInfoDTONull(UserInfoDTO userInfoDTO){
