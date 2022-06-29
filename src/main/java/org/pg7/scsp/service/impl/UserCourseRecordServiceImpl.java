@@ -13,9 +13,7 @@ import org.pg7.scsp.service.IUserCourseRecordService;
 import org.pg7.scsp.utils.SemesterUtil;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -28,6 +26,22 @@ import java.util.Map;
 @Service
 public class UserCourseRecordServiceImpl extends ServiceImpl<UserCourseRecordMapper, UserCourseRecord> implements IUserCourseRecordService {
 
+
+    @Override
+    public Result conditionPageQueryCourseRecord(CourseQuery courseQuery) {
+
+        // TODO 权限验证
+        if(!isAllowedUse(courseQuery.getAuth())){
+            return Result.fail("权限不足！");
+        }
+
+
+        QueryWrapper<UserCourseRecord> wrapper = this.getWrapper(courseQuery);
+        Page<UserCourseRecord> page = new Page<>(courseQuery.getPage(), courseQuery.getSize());
+        baseMapper.selectPage(page, wrapper);
+
+        return Result.ok(page);
+    }
     /**
      * 需包含分页参数
      *      page（默认1）， size（默认20）
@@ -82,22 +96,6 @@ public class UserCourseRecordServiceImpl extends ServiceImpl<UserCourseRecordMap
         return wrapper;
     }
     @Override
-    public Result conditionPageQueryCourseRecord(CourseQuery courseQuery) {
-
-        // TODO 权限验证
-        if(!isAllowedUse(courseQuery.getAuth())){
-            return Result.fail("权限不足！");
-        }
-
-
-        QueryWrapper<UserCourseRecord> wrapper = this.getWrapper(courseQuery);
-        Page<UserCourseRecord> page = new Page<>(courseQuery.getPage(), courseQuery.getSize());
-        baseMapper.selectPage(page, wrapper);
-
-        return Result.ok(page);
-    }
-
-    @Override
     public Result queryUserCourseRecord(CourseQuery courseQuery) {
         // TODO 权限验证
 
@@ -133,6 +131,21 @@ public class UserCourseRecordServiceImpl extends ServiceImpl<UserCourseRecordMap
         }
         List<UserCourseRecord> list = query().eq("user_id", userId).lt("score", 60).list();
         return Result.ok(list);
+    }
+
+    @Override
+    public Result queryUserNeedRetakeCourse(CourseQuery courseQuery) {
+        Integer userId = courseQuery.getUserId();
+        if(userId == null){
+            return Result.fail("用户id错误！");
+        }
+
+        List<UserCourseRecord> unPass = query().eq("user_id", userId).lt("score", 60).list();
+        List<UserCourseRecord> pass = query().eq("user_id", userId).ge("score", 60).list();
+        Set<String> set = new HashSet<>();
+        unPass.forEach(u->set.add(u.getCourseName()));
+        pass.forEach(u->set.remove(u.getCourseName()));
+        return Result.ok(set);
     }
 
     @Override

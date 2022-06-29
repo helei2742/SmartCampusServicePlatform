@@ -21,4 +21,9 @@
 
     </select>
 
+
+    <insert id="setRetakeCourse" parameterType="java.lang.Integer">
+        insert into tb_retake_course(course_id, user_id) values (#{courseId},#{userId})
+    </insert>
+
 </mapper>

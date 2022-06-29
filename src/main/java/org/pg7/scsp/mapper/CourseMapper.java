@@ -19,6 +19,22 @@ import java.util.List;
  * @since 2022-06-26
  */
 public interface CourseMapper extends BaseMapper<Course> {
+    /**
+     * 设置课程到时间
+     * @param courseId
+     * @param courseTimeId
+     * @return
+     */
+    Integer setCourseTime(@Param("courseId") Integer courseId, @Param("courseTimeId") Integer courseTimeId);
+
+    /**
+     * 设置课程老师
+     * @param courseId
+     * @param teacherId
+     * @return
+     */
+    Integer setCourseTeacher(@Param("courseId") Integer courseId, @Param("teacherId") Integer teacherId);
+
 
 
     /**
@@ -41,21 +57,6 @@ public interface CourseMapper extends BaseMapper<Course> {
      */
     List<CourseDTO> querySemesterAllCourseAllInfo(String semester);
 
-    /**
-     * 设置课程到时间
-     * @param courseId
-     * @param courseTimeId
-     * @return
-     */
-    Integer setCourseTime(@Param("courseId") Integer courseId, @Param("courseTimeId") Integer courseTimeId);
-
-    /**
-     * 设置课程老师
-     * @param courseId
-     * @param teacherId
-     * @return
-     */
-    Integer setCourseTeacher(@Param("courseId") Integer courseId, @Param("teacherId") Integer teacherId);
 
     /**
      * 查询总课程数量

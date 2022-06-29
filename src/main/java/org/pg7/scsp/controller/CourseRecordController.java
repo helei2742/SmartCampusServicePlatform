@@ -63,6 +63,12 @@ public class CourseRecordController {
         return userCourseRecordService.queryUserTotalUnPassCredit(courseQuery);
     }
 
+    @PostMapping("/queryNeedRetake")
+    @ResponseBody
+    public Result queryNeedRetake(@RequestBody CourseQuery courseQuery){
+        //TODO 查询用户需重修课都课程名
+        return userCourseRecordService.queryUserNeedRetakeCourse(courseQuery);
+    }
 
     @PostMapping("/selectCourse")
     @ResponseBody

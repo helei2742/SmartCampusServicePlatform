@@ -2,10 +2,8 @@ package org.pg7.scsp.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.pg7.scsp.dto.Result;
-import org.pg7.scsp.dto.UserDTO;
 import org.pg7.scsp.entity.UserCourseRecord;
 import org.pg7.scsp.query.CourseQuery;
-import org.pg7.scsp.utils.UserHolder;
 
 /**
  * <p>
@@ -60,6 +58,13 @@ public interface IUserCourseRecordService extends IService<UserCourseRecord> {
      * @return
      */
     Result queryUserUnPassCourse(CourseQuery courseQuery);
+
+    /**
+     * 查询用户需要重修的课程，修过，但一次都没及格
+     * @param courseQuery
+     * @return
+     */
+    Result queryUserNeedRetakeCourse(CourseQuery courseQuery);
 
     /**
      * 查询用户学分情况（已修学分）

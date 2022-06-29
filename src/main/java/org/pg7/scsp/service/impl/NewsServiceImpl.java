@@ -2,6 +2,8 @@ package org.pg7.scsp.service.impl;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -25,6 +27,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -111,11 +114,13 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements IN
 
     @Override
     public Result queryById(int id) {
+        String rankKey = RedisConstants.RANK_NEWS_KEY;
+        String lock  = new String(RedisConstants.LOCK_NEWS_KEY + id).intern();
+
         News news = getById(id);
 
         if(news == null) return Result.fail("不存在该新闻");
         
-        String lock  = new String(RedisConstants.LOCK_NEWS_KEY + id).intern();
 //        String idStr = String.valueOf(id);
         synchronized (lock){
 //            Object o = stringRedisTemplate.opsForHash().get(RedisConstants.LOCK_NEWS_KEY, idStr);
@@ -125,7 +130,6 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements IN
 //                int seeCount = Integer.parseInt((String) o);
 //                stringRedisTemplate.opsForHash().put(RedisConstants.LOCK_NEWS_KEY, idStr,  String.valueOf(seeCount+1));
 //            }
-            String rankKey = RedisConstants.RANK_NEWS_KEY;
             NewsRedisDto newsRedisDto = new NewsRedisDto();
             newsRedisDto.setId(id);
             newsRedisDto.setTitle(news.getTitle());

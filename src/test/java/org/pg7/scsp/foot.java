@@ -1,19 +1,25 @@
 package org.pg7.scsp;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.pg7.scsp.entity.*;
 import org.pg7.scsp.mapper.*;
+import org.pg7.scsp.query.CourseQuery;
+import org.pg7.scsp.service.impl.UserCourseRecordServiceImpl;
+import org.pg7.scsp.utils.SemesterUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import javax.jws.Oneway;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 public class foot {
@@ -61,7 +67,7 @@ public class foot {
             "2008年秋季", "2008年春季","2009年秋季", "2009年春季","2010年秋季", "2010年春季","2011年秋季", "2011年春季",
             "2012年秋季", "2012年春季","2013年秋季", "2013年春季","2014年秋季", "2014年春季","2015年秋季", "2015年春季",
             "2016年秋季", "2016年春季","2017年秋季", "2017年春季","2018年秋季", "2018年春季","2019年秋季", "2019年春季",
-            "2020年秋季", "2020年春季","2021年秋季", "2021年春季","2021年秋季", "2022年春季","2022年秋季", "2022年春季",
+            "2020年秋季", "2020年春季","2021年秋季", "2021年春季","2021年秋季", "2021年春季","2022年秋季", "2022年春季",
     };
     private static String[] courseName = new String[]{
             "体育","军事理论","机械制图", "算法语言","大学物理","物理实验","线性代数","法律基础","普通物理","普通物理实验",
@@ -291,5 +297,112 @@ public class foot {
             targetSet.add(random.nextInt(range));
         }
         return targetSet;
+    }
+
+
+    @Test
+    public void setRetakeCourse(){
+        //查询用户
+        List<User> users = userMapper.selectList(null);
+        //遍历用户
+        for (User user : users) {
+            //查询用户选的全部课程
+            QueryWrapper<UserCourseRecord> queryWrapper= new QueryWrapper<>();
+            queryWrapper.eq("user_id", user.getId());
+            List<UserCourseRecord> list = userCourseRecordMapper.selectList(queryWrapper);
+
+            HashMap<String, List<UserCourseRecord>> map = new HashMap<>();
+
+            for (UserCourseRecord userCourseRecord : list) {
+                String courseName = userCourseRecord.getCourseName();
+                if(!map.containsKey(courseName)){
+                    map.put(courseName, new ArrayList<>());
+                }
+                map.get(courseName).add(userCourseRecord);
+            }
+
+            Set<String> keySet = map.keySet();
+            for (String key : keySet) {
+                List<UserCourseRecord> t = map.get(key);
+                t.sort(new Comparator<UserCourseRecord>() {
+                    @Override
+                    public int compare(UserCourseRecord o1, UserCourseRecord o2) {
+                        return o1.getSemester().compareTo(o2.getSemester());
+                    }
+                });
+                for (int i = 0; i < t.size(); i++) {
+                    UserCourseRecord record = t.get(i);
+                    Integer courseId = record.getId();
+                    Integer count = i+1;
+                    UserCourseRecord update = new UserCourseRecord();
+                    update.setId(courseId);
+                    update.setCount(count);
+                    userCourseRecordMapper.updateById(update);
+                }
+            }
+        }
+    }
+
+    @Resource
+    SeckillCourseMapper seckillCourseMapper;
+    @Test
+    public void setSeckillCourse(){
+        String currentSemester = SemesterUtil.getCurrentSemester();
+
+
+        QueryWrapper<Course> wrapper = new QueryWrapper<>();
+        wrapper.eq("semester", currentSemester);
+        List<Course> courses = courseMapper.selectList(wrapper);
+
+        for (Course cours : courses) {
+            //设置当前学期的选课秒杀表
+            SeckillCourse seckillCourse = new SeckillCourse();
+            seckillCourse.setCourseId(cours.getId());
+            seckillCourse.setStock(RandomUtil.randomInt(50, 100));
+            seckillCourse.setStartTime(LocalDateTime.now());
+            seckillCourse.setEndTime(LocalDateTime.now().plusDays(60));
+            seckillCourseMapper.insert(seckillCourse);
+
+            //删除当前学期选过的记录
+            UpdateWrapper<UserCourseRecord> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("course_id", cours.getId());
+            int delete = userCourseRecordMapper.delete(updateWrapper);
+        }
+    }
+
+    @Test
+    public void test(){
+        //查询用户选的全部课程
+        QueryWrapper<UserCourseRecord> queryWrapper= new QueryWrapper<>();
+        queryWrapper.eq("user_id", 1);
+        List<UserCourseRecord> list = userCourseRecordMapper.selectList(queryWrapper);
+
+        HashMap<String, List<UserCourseRecord>> map = new HashMap<>();
+
+        for (UserCourseRecord userCourseRecord : list) {
+            String courseName = userCourseRecord.getCourseName();
+            if(!map.containsKey(courseName)){
+                map.put(courseName, new ArrayList<>());
+            }
+            map.get(courseName).add(userCourseRecord);
+        }
+
+        List<HashMap<String, Object>> res = new ArrayList<>();
+        Set<String> keySet = map.keySet();
+        for (String key : keySet) {
+            HashMap<String, Object> t = new HashMap<>();
+            t.put("courseName", key);
+            t.put("recordList", map.get(key));
+            res.add(t);
+        }
+
+        for (HashMap<String, Object> re : res) {
+            System.out.println(re);
+        }
+    }
+
+    @Test
+    void test2(){
+        System.out.println("2022年春季学期".compareTo("2022年秋季学期"));
     }
 }

@@ -14,7 +14,6 @@ import org.pg7.scsp.query.CourseQuery;
  * @since 2022-06-26
  */
 public interface ICourseService extends IService<Course> {
-
     /**
      * 根据条件分页查询课程
      *      基本的条件查询参数

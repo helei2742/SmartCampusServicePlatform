@@ -1,6 +1,8 @@
 package org.pg7.scsp.interceptor;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import org.pg7.scsp.dto.UserDTO;
 import org.pg7.scsp.utils.RedisConstants;
 import org.pg7.scsp.utils.UserHolder;
@@ -24,12 +26,12 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //获取请求头的token
         String token = request.getHeader("authorization");
-
+        System.out.println(token);
         //redis获取用户
-        Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(RedisConstants.LOGIN_USER_KEY + token);
+        String json = stringRedisTemplate.opsForValue().get(RedisConstants.LOGIN_USER_KEY + token);
 
-        if(!map.isEmpty()){
-            UserDTO userDTO = BeanUtil.mapToBean(map, UserDTO.class,false);
+        if(StrUtil.isNotBlank(json)){
+            UserDTO userDTO = JSONUtil.toBean(json, UserDTO.class);
 
             //更新redis
             stringRedisTemplate.expire(RedisConstants.LOGIN_USER_KEY + token, RedisConstants.LOGIN_USER_TTL, TimeUnit.MINUTES);

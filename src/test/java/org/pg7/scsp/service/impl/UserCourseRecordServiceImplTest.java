@@ -37,7 +37,13 @@ class UserCourseRecordServiceImplTest {
         Result result = userCourseRecordService.queryUserUnPassCourse(courseQuery);
         System.out.println(result);
     }
-
+@Test
+void queryUserNeedRetakeCourse(){
+    CourseQuery courseQuery = new CourseQuery();
+    courseQuery.setUserId(1);
+    Result result = userCourseRecordService.queryUserNeedRetakeCourse(courseQuery);
+    System.out.println(result);
+}
     @Test
     void queryUserCredit() {
         CourseQuery courseQuery = new CourseQuery();

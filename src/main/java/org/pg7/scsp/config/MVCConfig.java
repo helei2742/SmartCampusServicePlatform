@@ -15,10 +15,10 @@ public class MVCConfig implements WebMvcConfigurer {
     private StringRedisTemplate stringRedisTemplate;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //刷新拦截器
+//        //刷新拦截器
 //        registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).addPathPatterns("/**").order(0);
-
-        //登录拦截器
+//
+//        //登录拦截器
 //        registry.addInterceptor(new LoginInterceptor())
 //                .excludePathPatterns("/user/login",
 //                                     "/user/getCaptchaImg").order(1);

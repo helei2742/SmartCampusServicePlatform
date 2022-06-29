@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.pg7.scsp.mapper.CourseMapper">
 
+    <insert id="setCourseTime" parameterType="java.lang.Integer">
+        insert into tb_course_course_time(course_id,course_time_id) values(#{courseId}, #{courseTimeId})
+    </insert>
+
+    <insert id="setCourseTeacher" parameterType="java.lang.Integer">
+        insert into tb_course_teacher(course_id,course_time_id) values(#{courseId}, #{teacherId})
+    </insert>
 
 <!--
     <resultMap id="courseAllInfoMap" type="org.pg7.scsp.dto.CourseDTO">
@@ -116,14 +123,6 @@
         and
             c.semester = #{semester}
     </select>
-
-    <insert id="setCourseTime" parameterType="java.lang.Integer">
-        insert into tb_course_course_time set course_id = #{courseId}, course_time_id = #{courseTimeId}
-    </insert>
-
-    <insert id="setCourseTeacher" parameterType="java.lang.Integer">
-        insert into tb_course_teacher set course_id = #{courseId}, teacher_id = #{teacherId}
-    </insert>
 
     <select id="queryTotalCountCourse" resultType="java.lang.Integer">
         select count(id)

@@ -33,4 +33,12 @@ public interface UserCourseRecordMapper extends BaseMapper<UserCourseRecord> {
      * @return
      */
     List<Map<String, Object>> queryUserUnPassCredit(Integer userId);
+
+    /**
+     * 设置用户需重修课程
+     * @param userId
+     * @param courseId
+     * @return
+     */
+    Integer setRetakeCourse(@Param("userId") Integer userId, @Param("courseId")Integer courseId);
 }

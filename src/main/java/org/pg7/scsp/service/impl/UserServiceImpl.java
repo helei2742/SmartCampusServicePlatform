@@ -48,7 +48,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         User user = query().eq("id_number", idNumber).one();
 
         if(user == null){
-            response.setStatus(401);
             return Result.fail("该用户不存在");
         }
 
@@ -96,7 +95,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
-        System.out.println(userDTO);
         Map<String, Object> userMap = BeanUtil.beanToMap(userDTO);
 
         String token = UUID.randomUUID().toString(true);
