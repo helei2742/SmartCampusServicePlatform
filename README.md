@@ -9,6 +9,12 @@
     需使用apifox打开
 # 数据库
     数据库的sql文件在src/main/resources目录下的sql.sql
+
+## 数据库选择
+    关系数据库Mysql 8.x 版本
+    非关系形数据库 Redis 
+    *请下载安装，并更改application.yml配置文件设置
+
 ## 数据库数据随机生成脚本：
     脚本在test目录下java/org/pg7/scsp/foot，执行test命令即可，
     默认50个学生

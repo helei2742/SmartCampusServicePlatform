@@ -99,7 +99,7 @@ public class SeckillCourseServiceImpl extends ServiceImpl<SeckillCourseMapper, S
         //保存选课记录
         SeckillCourseOrder order = new SeckillCourseOrder();
 
-        long orderId = redisIdWorker.nextId("course");
+        long orderId = redisIdWorker.nextId(SystemConstants.REDIS_ID_WORKER_KEY_COURSE);
         order.setId(orderId);
         order.setUserId(userId);
         order.setCourseId(courseId);

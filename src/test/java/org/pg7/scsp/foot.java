@@ -1,25 +1,24 @@
 package org.pg7.scsp;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.pg7.scsp.dto.CourseTestFormDTO;
 import org.pg7.scsp.entity.*;
 import org.pg7.scsp.mapper.*;
-import org.pg7.scsp.query.CourseQuery;
-import org.pg7.scsp.service.impl.UserCourseRecordServiceImpl;
+import org.pg7.scsp.service.impl.TestServiceImpl;
+import org.pg7.scsp.utils.RedisIdWorker;
 import org.pg7.scsp.utils.SemesterUtil;
+import org.pg7.scsp.utils.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
-import javax.jws.Oneway;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 public class foot {
@@ -290,14 +289,6 @@ public class foot {
         System.out.println("插入课程："+courses.size());
         System.out.println("插入选课记录："+userCourseRecords.size());
     }
-    private HashSet<Integer> getRandomNum(int n,int range) throws Exception {
-        Random random = new Random();
-        HashSet<Integer> targetSet = new HashSet<>();
-        while (targetSet.size() < n) {
-            targetSet.add(random.nextInt(range));
-        }
-        return targetSet;
-    }
 
 
     @Test
@@ -343,6 +334,8 @@ public class foot {
         }
     }
 
+
+
     @Resource
     SeckillCourseMapper seckillCourseMapper;
     @Test
@@ -368,6 +361,97 @@ public class foot {
             updateWrapper.eq("course_id", cours.getId());
             int delete = userCourseRecordMapper.delete(updateWrapper);
         }
+    }
+
+
+    @Resource
+    CourseTestMapper courseTestMapper;
+
+    @Test
+    public void setCourseTest(){
+//        String currentSemester = SemesterUtil.getCurrentSemester();
+
+
+        QueryWrapper<Course> wrapper = new QueryWrapper<>();
+//        wrapper.eq("semester", currentSemester);
+        wrapper.eq("semester", "2021年春季");
+        List<Course> courses = courseMapper.selectList(wrapper);
+
+        for (Course cours : courses) {
+            CourseTest test = new CourseTest();
+
+            test.setCourseId(cours.getId());
+            test.setCourseName(cours.getCourseName());
+            test.setStartTime(LocalDateTime.now());
+//            test.setTestType(1);
+//            test.setTestType(2);
+            test.setTestType(3);
+            test.setEndTime(LocalDateTime.now().plusDays(60));
+            test.setLocation("江安一教405");
+
+            courseTestMapper.insert(test);
+        }
+
+    }
+
+    @Resource
+    UserTestRecordMapper userTestRecordMapper;
+    @Resource
+    RedisIdWorker redisIdWorker;
+
+    @Test
+    public void setUserTestRecord(){
+        QueryWrapper<CourseTest> courseTestQueryWrapper = new QueryWrapper<>();
+        courseTestQueryWrapper.eq("test_type", SystemConstants.COURSE_TEST_TYPE_MID);
+//        courseTestQueryWrapper.eq("test_type", SystemConstants.COURSE_TEST_TYPE_END);
+//        courseTestQueryWrapper.eq("test_type", SystemConstants.COURSE_TEST_TYPE_Re);
+        List<CourseTest> courseTests = courseTestMapper.selectList(courseTestQueryWrapper);
+
+        for (CourseTest courseTest : courseTests) {
+
+            QueryWrapper<UserCourseRecord> wrapper = new QueryWrapper<>();
+
+            wrapper.eq("course_id", courseTest.getCourseId());
+
+            List<UserCourseRecord> userCourseRecords = userCourseRecordMapper.selectList(wrapper);
+
+            for (UserCourseRecord userCourseRecord : userCourseRecords) {
+                long nextId = redisIdWorker.nextId(SystemConstants.REDIS_ID_WORKER_KEY_COURSETEST);
+
+                UserTestRecord userTestRecord = new UserTestRecord();
+                userTestRecord.setId(nextId);
+                userTestRecord.setUserId(userCourseRecord.getUserId());
+                userTestRecord.setTestId(courseTest.getId());
+                userTestRecord.setScore((float) RandomUtil.randomDouble(0,100));
+
+//                userTestRecord.setStatus(SystemConstants.COURSE_TEST_RECORD_STATUS_UNSTART);
+//                userTestRecord.setStatus(SystemConstants.COURSE_TEST_RECORD_STATUS_UNJOIN);
+                userTestRecord.setStatus(SystemConstants.COURSE_TEST_RECORD_STATUS_JOINED);
+//                userTestRecord.setStatus(SystemConstants.COURSE_TEST_RECORD_STATUS_CANCEL);
+
+                userTestRecordMapper.insert(userTestRecord);
+            }
+        }
+    }
+
+    @Autowired
+    TestServiceImpl testService;
+
+    @Test
+    public void createCourseReTest(){
+        List<CourseTest> courseTests = courseTestMapper.selectList(null);
+        for (CourseTest courseTest : courseTests) {
+            CourseTestFormDTO courseTestFormDTO = new CourseTestFormDTO();
+
+            courseTestFormDTO.setCourseId(courseTest.getCourseId());
+
+            courseTestFormDTO.setStartTime(LocalDateTime.now());
+            courseTestFormDTO.setEndTime(LocalDateTime.now().plusDays(7));
+            courseTestFormDTO.setLocation(RandomUtil.randomString("补考场地",10));
+
+            testService.createReTestByCourseId(courseTestFormDTO);
+        }
+
     }
 
     @Test
