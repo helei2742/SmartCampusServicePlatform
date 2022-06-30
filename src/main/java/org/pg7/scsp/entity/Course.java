@@ -38,6 +38,12 @@ public class Course {
     private Integer majorId;
       @ApiModelProperty("课程详情")
       private String detail;
+    @ApiModelProperty("开始周数")
+      private Integer startWeek;
+    @ApiModelProperty("结束周数")
+      private Integer endWeek;
+    @ApiModelProperty("上课位置")
+      private String location;
 
     @ApiModelProperty("创建时间")
     @TableField(fill = FieldFill.INSERT)
