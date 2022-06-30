@@ -60,6 +60,9 @@
         <result column="detail" property="detail" jdbcType="VARCHAR"/>
         <result column="semester" property="semester" jdbcType="VARCHAR"/>
         <result column="majorId" property="majorId" jdbcType="VARCHAR"/>
+        <result column="startWeek" property="startWeek" jdbcType="INTEGER"/>
+        <result column="endWeek" property="endWeek" jdbcType="INTEGER"/>
+        <result column="location" property="location" jdbcType="VARCHAR"/>
 
         <collection property="courseTimeList" ofType="org.pg7.scsp.entity.CourseTime">
             <id column="timeId" property="id" jdbcType="INTEGER"/>
@@ -76,6 +79,7 @@
             <result column="icon" property="icon" jdbcType="VARCHAR"/>
         </collection>
     </resultMap>
+
     <sql id="allInfoSelectFrom">
         select
             ct.id timeId,
@@ -86,6 +90,9 @@
             c.course_name courseName,
             c.credit credit,
             c.detail detail,
+            c.start_week startWeek,
+            c.location location,
+            c.end_week endWeek,
             c.semester semester,
             c.major_id majorId,
             tu.id teacherId,
@@ -93,11 +100,12 @@
             tu.true_name name,
             tu.ebg ebg,
             tu.icon icon
-        from tb_course_time ct
-                 left join tb_course_course_time cct on ct.id = cct.course_time_id
-                 right join tb_course c on cct.course_id = c.id
-                 left join tb_course_teacher ctea on c.id = ctea.course_id
-                 left join tb_user tu on ctea.teacher_id = tu.id
+        from
+            tb_course_time ct
+                left join tb_course_course_time cct on ct.id = cct.course_time_id
+                right join tb_course c on cct.course_id = c.id
+                left join tb_course_teacher ctea on c.id = ctea.course_id
+                left join tb_user tu on ctea.teacher_id = tu.id
     </sql>
 <!--    查询全部-->
     <select id="queryAllCourseAllInfo" resultMap="courseAllInfoMap">

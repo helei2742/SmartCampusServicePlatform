@@ -19,8 +19,12 @@ public class CourseDTO {
     private Float credit;
 
     private String detail;
+    private String location;
+    private Integer startWeek;
+    private Integer endWeek;
 
     private List<CourseTime> courseTimeList;
 
     private List<User> teacherList;
+
 }
