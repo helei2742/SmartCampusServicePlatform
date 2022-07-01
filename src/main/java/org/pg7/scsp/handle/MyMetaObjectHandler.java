@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 // 自动插入数据
 @Slf4j
@@ -39,4 +41,20 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         this.fillStrategy(metaObject, "updateTime", LocalDateTime.now()); // 也可以使用(3.3.0 该方法有bug)*/
         this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
     }
+
+
+/*    // 源码是默认有值不覆盖,如果提供的值为null也不填充，updateTime 一般都是有值的，所以重写
+    @Override
+    public MetaObjectHandler strictFillStrategy(MetaObject metaObject, String fieldName, Supplier<?> fieldVal) {
+
+        if ("updateTime".equals(fieldName)) {
+            if (Objects.nonNull(fieldVal)) {
+                metaObject.setValue(fieldName, fieldVal);
+            }
+        } else if (getFieldValByName(fieldName, metaObject) == null) {
+            setFieldValByName(fieldName, fieldVal.get(), metaObject);
+        }
+        return this;
+    }*/
+
 }

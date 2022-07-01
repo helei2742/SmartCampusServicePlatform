@@ -22,13 +22,10 @@ public interface ISeckillCourseService extends IService<SeckillCourse> {
      */
     Result querySelectInfoById(Integer courseId);
 
+
     /**
-     * 选课，
-     * @param courseId
-     * @param userId
+     * 将数据库中的秒杀课程的课余量添加到redis
      * @return
      */
-    Result seckillCourse(Integer courseId, Integer userId);
-
-
+    Result addSeckillCourseStockToRedis();
 }

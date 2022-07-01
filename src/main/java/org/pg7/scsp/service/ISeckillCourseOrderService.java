@@ -13,6 +13,13 @@ import org.pg7.scsp.entity.SeckillCourseOrder;
  * @since 2022-06-28
  */
 public interface ISeckillCourseOrderService extends IService<SeckillCourseOrder> {
+    /**
+     * 选课，
+     * @param courseId
+     * @param userId
+     * @return
+     */
+    Result seckillCourse(Integer courseId, Integer userId);
 
     /**
      * 查询用户当前选课阶段抢到的课程id

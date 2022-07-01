@@ -8,14 +8,18 @@ import org.pg7.scsp.entity.SeckillCourseOrder;
 import org.pg7.scsp.mapper.SeckillCourseMapper;
 import org.pg7.scsp.service.ISeckillCourseOrderService;
 import org.pg7.scsp.service.ISeckillCourseService;
+import org.pg7.scsp.utils.RedisConstants;
 import org.pg7.scsp.utils.RedisIdWorker;
 import org.pg7.scsp.utils.SystemConstants;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -28,11 +32,9 @@ import java.time.LocalDateTime;
 @Service
 public class SeckillCourseServiceImpl extends ServiceImpl<SeckillCourseMapper, SeckillCourse> implements ISeckillCourseService {
 
-    @Autowired
-    private RedisIdWorker redisIdWorker;
 
     @Autowired
-    private ISeckillCourseOrderService seckillCourseOrderService;
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public Result querySelectInfoById(Integer courseId) {
@@ -45,68 +47,15 @@ public class SeckillCourseServiceImpl extends ServiceImpl<SeckillCourseMapper, S
     }
 
     @Override
-    public Result seckillCourse(Integer courseId, Integer userId) {
-        //查询数据库看是否存在
-        SeckillCourse seckillCourse = query().eq("course_id", courseId).one();
-        if(seckillCourse == null){
-            return Result.fail("没有该课程");
+    public Result addSeckillCourseStockToRedis() {
+        List<SeckillCourse> seckillCourses = query().select("course_id", "stock").list();
+        for (SeckillCourse seckillCours : seckillCourses) {
+            stringRedisTemplate.opsForValue().set(
+                    RedisConstants.SECKILL_COURSE_STOCK_KEY + seckillCours.getCourseId()
+                    , seckillCours.getStock().toString());
         }
 
-        //没有开始
-        if (seckillCourse.getStartTime().isAfter(LocalDateTime.now())) {
-            return Result.fail("选课还没开始");
-        }
-        //已经结束
-        if(seckillCourse.getEndTime().isBefore(LocalDateTime.now())) {
-            return Result.fail("选课已经结束");
-        }
-        //课余量不足
-        Integer stock = seckillCourse.getStock();
-        if(stock <= 0){
-            return Result.fail("课余量不足");
-        }
-
-        //没毛病，开选
-        String lock = String.valueOf(userId).intern();
-        synchronized (lock){
-            SeckillCourseServiceImpl proxy = (SeckillCourseServiceImpl) AopContext.currentProxy();
-            return proxy.createSeckillOrder(userId,courseId);
-        }
-    }
-
-    @Transactional
-    public Result createSeckillOrder(Integer userId, Integer courseId){
-        //一人只能一节课
-        Integer count = seckillCourseOrderService.query()
-                .eq("user_id", userId)
-                .eq("course_id", courseId)
-                .eq("status", SystemConstants.SECKILL_COURSE_ORDER_STATUSE_WAIT).count();
-
-        if(count>0){
-            return Result.fail("你已选过该课程");
-        }
-
-        //乐观锁，用stock字段做标志，只要更新时课余量大于0则可以更新
-        //更改课余量
-        boolean update = update().setSql("stock=stock-1")
-                .eq("course_id", courseId)
-                .gt("stock",0)
-                .update();
-
-        if(!update){
-            return Result.fail("课余量不足");
-        }
-        //保存选课记录
-        SeckillCourseOrder order = new SeckillCourseOrder();
-
-        long orderId = redisIdWorker.nextId(SystemConstants.REDIS_ID_WORKER_KEY_COURSE);
-        order.setId(orderId);
-        order.setUserId(userId);
-        order.setCourseId(courseId);
-        order.setStatus(1);
-
-        seckillCourseOrderService.save(order);
-        return Result.ok(orderId);
+        return Result.ok(seckillCourses.size());
     }
 
 }

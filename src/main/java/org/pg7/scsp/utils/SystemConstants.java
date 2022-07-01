@@ -6,7 +6,7 @@ public class SystemConstants {
      */
     public static final int DEFAULT_PAGE_SIZE = 20;
 
-    public static final String REDIS_ID_WORKER_KEY_COURSE = "course";
+    public static final String REDIS_ID_WORKER_KEY_COURSE_ORDER = "course";
 
     public static final String REDIS_ID_WORKER_KEY_COURSETEST = "coursetest";
 

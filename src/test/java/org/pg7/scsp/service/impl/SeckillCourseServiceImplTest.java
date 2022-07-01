@@ -11,12 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class SeckillCourseServiceImplTest {
 
     @Autowired
-    SeckillCourseServiceImpl seckillCourseService;
+    SeckillCourseOrderServiceImpl seckillCourseOrderService;
 
     @Test
     void seckillCourse() {
 
-        Result result = seckillCourseService.seckillCourse(13501, 1);
+        Result result = seckillCourseOrderService.seckillCourse(13501, 1);
         System.out.println(result);
     }
 }

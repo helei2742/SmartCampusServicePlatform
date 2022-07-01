@@ -19,7 +19,7 @@ public class MybatisConfig {
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
 
         //乐观锁
-        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+//        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         return interceptor;
     }
 

@@ -18,43 +18,25 @@ import org.springframework.stereotype.Controller;
  * @since 2022-06-28
  */
 @Controller
-@RequestMapping("/selectCourse")
+@RequestMapping("/seckillcourse")
 public class SeckillCourseController {
     @Autowired
     ISeckillCourseService seckillCourseService;
-    @Autowired
-    ISeckillCourseOrderService seckillCourseOrderService;
-
 
     @PostMapping("/querySelectInfoById/{id}")
     @ResponseBody
     public Result querySelectInfoById(@PathVariable("id") Integer courseId){
         // TODO 根据id查询选课信息
-
         return seckillCourseService.querySelectInfoById(courseId);
     }
 
-    @PostMapping("/seckillCourse")
-    @ResponseBody
-    public Result seckillCourse(@RequestParam("courseId") Integer courseId,@RequestParam("userId")  Integer userId){
-        // TODO 选课
 
-        return seckillCourseService.seckillCourse(courseId, userId);
+    @PostMapping("/addSeckillCourseStockToRedis")
+    @ResponseBody
+    public Result addSeckillCourseStockToRedis(){
+        //TODO 将秒杀课程以及课余量添加到redis
+        return seckillCourseService.addSeckillCourseStockToRedis();
     }
 
-    @PostMapping("/userSeckillCourseId")
-    @ResponseBody
-    public Result userSeckillCourseId(@RequestParam("userId")  Integer userId){
-        // TODO 查询用户当前选课阶段选到的课
-        return seckillCourseOrderService.userSeckillCourseId(userId);
-    }
-
-    @PostMapping("/cancelSeckillCourse")
-    @ResponseBody
-    public Result cancelSeckillCourseId(@RequestParam("userId")  Integer userId,
-                                        @RequestParam("courseId")  Integer courseId){
-        // TODO co
-        return seckillCourseOrderService.cancelSeckillCourseId(userId,courseId);
-    }
 }
 

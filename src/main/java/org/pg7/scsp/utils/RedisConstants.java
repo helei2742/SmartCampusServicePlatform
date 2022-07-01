@@ -17,6 +17,8 @@ public class RedisConstants {
      */
     public static final Long LOGIN_USER_TTL = 7L;
 
+
+    public static final String LOCK_SECKILL_COURSE_USER_KEY = "lock:seckill:course:user:";
     public static final String LOCK_NEWS_KEY = "lock:news:";
 
     public static final String RANK_NEWS_KEY = "rank:news";
@@ -35,4 +37,6 @@ public class RedisConstants {
      */
     public static final Integer CACHE_COURSE_NAME_TTL = 30;
 
+    public static final String SECKILL_COURSE_STOCK_KEY = "seckill:course:stock:";
+    public static final String SECKILL_COURSE_ORDER_KEY = "seckill:course:order:";
 }
