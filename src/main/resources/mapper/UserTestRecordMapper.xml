@@ -1,5 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace=".genertor.mapper.UserTestRecordMapper">
+<mapper namespace="org.pg7.scsp.mapper.UserTestRecordMapper">
 
+
+    <sql id="conditionQuerySelectFrom">
+        select
+            a.id recordId,
+            a.user_id userId,
+            a.test_id testId,
+            a.score score,
+            a.status status,
+
+            b.id testId,
+            b.course_id courseId,
+            b.course_name courseName,
+            b.test_type testType,
+            b.start_time startTime,
+            b.end_time endTime,
+            b.location location,
+            b.test_type testType
+        from tb_user_test_record a
+                 left join tb_course_test b
+                           on a.test_id = b.id
+    </sql>
+
+    <resultMap id="userTestDTOMap" type="org.pg7.scsp.dto.UserTestDTO">
+        <id column="recordId" property="id" jdbcType="INTEGER"/>
+        <result column="userId" property="userId" jdbcType="INTEGER"/>
+        <result column="testId" property="testId" jdbcType="INTEGER"/>
+        <result column="score" property="score" jdbcType="FLOAT"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+
+        <association property="courseTest" javaType="org.pg7.scsp.entity.CourseTest">
+            <id column="testId" property="id" jdbcType="INTEGER"/>
+            <result column="courseId" property="courseId" jdbcType="INTEGER"/>
+            <result column="courseName" property="courseName" jdbcType="VARCHAR"/>
+            <result column="testType" property="testType" jdbcType="INTEGER"/>
+            <result column="startTime" property="startTime" jdbcType="TIMESTAMP"/>
+            <result column="endTime" property="endTime" jdbcType="TIMESTAMP"/>
+            <result column="location" property="location" jdbcType="VARCHAR"/>
+            <result column="testType" property="testType" jdbcType="INTEGER"/>
+        </association>
+    </resultMap>
+
+    <select id="conditionQueryUserTest"
+            resultMap="userTestDTOMap"
+            parameterType="org.pg7.scsp.query.UserTestQuery">
+        <include refid="conditionQuerySelectFrom"/>
+        <where>
+            a.deleted = 0 and b.deleted = 0
+            <if test="userId != null">
+                and a.user_id = #{userId}
+            </if>
+            <if test="courseId != null">
+                and b.course_id = #{courseId}
+            </if>
+            <if test="testType != null">
+                and b.test_type = #{testType}
+            </if>
+            <if test="status != null">
+                and a.status = #{status}
+            </if>
+        </where>
+    </select>
 </mapper>

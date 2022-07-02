@@ -108,7 +108,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String tokenKey = RedisConstants.LOGIN_USER_KEY + token;
 
         stringRedisTemplate.opsForValue().set(tokenKey, JSONUtil.toJsonStr(userDTO),
-                RedisConstants.LOGIN_USER_TTL, TimeUnit.MINUTES);
+                RedisConstants.LOGIN_USER_TTL, TimeUnit.DAYS);
         userMap.put("token", token);
 
         return Result.ok(userMap);
@@ -184,5 +184,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         Object[] objects = list.stream().map(UserCourseRecord::getSemester).toArray();
 
         return Result.ok(objects);
+    }
+
+    @Override
+    public Result validate(String authorization) {
+        System.out.println(authorization);
+        if(StrUtil.isBlank(authorization)){
+            return Result.fail("没有权限！！");
+        }
+        String json = stringRedisTemplate.opsForValue().get(RedisConstants.LOGIN_USER_KEY + authorization);
+        if(StrUtil.isBlank(json)){
+            return Result.fail("没有权限！！");
+        }
+        UserDTO userDTO = JSONUtil.toBean(json, UserDTO.class);
+        return Result.ok(userDTO);
     }
 }

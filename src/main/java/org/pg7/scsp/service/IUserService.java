@@ -60,4 +60,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     Result queryUserSemester(Integer userId);
+
+    /**
+     * 登录校验
+     * @param authorization
+     * @return
+     */
+    Result validate(String authorization);
 }

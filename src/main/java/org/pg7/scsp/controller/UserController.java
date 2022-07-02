@@ -44,6 +44,12 @@ public class UserController {
         return userService.login(loginForm, request);
     }
 
+    @PostMapping("/validate")
+    @ResponseBody
+    public Result validate(HttpServletRequest request){
+        //TODO 免登录认证
+        return userService.validate(request.getHeader("Authorization"));
+    }
     /**
      * 产生验证码
      * @return
