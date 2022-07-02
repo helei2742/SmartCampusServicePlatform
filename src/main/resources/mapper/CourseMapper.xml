@@ -175,4 +175,16 @@
         and
         c.major_id in (select b.id from tb_collage a left join tb_major b  on a.id = b.college_id where a.name = #{collageName});
     </select>
+
+
+    <select id="queryAllInfoByIds" parameterType="java.util.List" resultMap="courseAllInfoMap">
+        <include refid="allInfoSelectFrom"></include>
+        <where>
+            c.deleted = 0
+            and
+            <foreach collection="array" open="c.id in(" close=")" item="id" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </select>
 </mapper>

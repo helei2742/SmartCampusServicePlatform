@@ -53,13 +53,13 @@ public class CourseRecordController {
     @PostMapping("/queryUserTotalCredit")
     @ResponseBody
     public Result userHaveTotalCredit(@RequestBody CourseQuery courseQuery){
-        //TODO 查询用户通过的总学分
+        //TODO 查询用户通过的学分
         return userCourseRecordService.queryUserTotalCredit(courseQuery);
     }
     @PostMapping("/queryUserTotalUnPassCredit")
     @ResponseBody
     public Result sserHaveTotalUnPassCredit(@RequestBody CourseQuery courseQuery){
-        //TODO 查询用户未通过的总学分
+        //TODO 查询用户未通过的学分
         return userCourseRecordService.queryUserTotalUnPassCredit(courseQuery);
     }
 
@@ -70,12 +70,4 @@ public class CourseRecordController {
         return userCourseRecordService.queryUserNeedRetakeCourse(courseQuery);
     }
 
-    @PostMapping("/selectCourse")
-    @ResponseBody
-    public Result userSelectCourse(@RequestParam("userId") Integer userId, @RequestParam("courseId") Integer courseId){
-        //TODO 用户选课
-
-//        userCourseRecordService.userSelectCourse()
-        return null;
-    }
 }

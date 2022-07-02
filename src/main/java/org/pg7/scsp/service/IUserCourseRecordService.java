@@ -67,7 +67,7 @@ public interface IUserCourseRecordService extends IService<UserCourseRecord> {
     Result queryUserNeedRetakeCourse(CourseQuery courseQuery);
 
     /**
-     * 查询用户学分情况（已修学分）
+     * 查询用户学分情况（已修学分,与未通过的学分情况）
      * @param courseQuery
      * @return
      */

@@ -161,6 +161,8 @@ public class UserCourseRecordServiceImpl extends ServiceImpl<UserCourseRecordMap
         Map<String, Object> res = new HashMap<>();
         res.put("pass", pass);
         res.put("unPass", unPass);
+        res.put("passCount", pass.size());
+        res.put("unPassCount", unPass.size());
         return Result.ok(res);
     }
 
@@ -175,7 +177,11 @@ public class UserCourseRecordServiceImpl extends ServiceImpl<UserCourseRecordMap
         List<Map<String, Object>> list = baseMapper.queryUserCredit(userId);
         final float[] total = {0};
         list.forEach(m->{total[0] = (total[0] +  (float)m.get("credit"));});
-        return Result.ok(total[0]);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("total", total[0]);
+        res.put("count", list.size());
+        return Result.ok(res);
     }
 
     @Override
@@ -190,6 +196,10 @@ public class UserCourseRecordServiceImpl extends ServiceImpl<UserCourseRecordMap
         List<Map<String, Object>> list = baseMapper.queryUserUnPassCredit(userId);
         final float[] total = {0};
         list.forEach(m->{total[0] = (total[0] +  (float)m.get("credit"));});
-        return Result.ok(total[0]);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("total", total[0]);
+        res.put("count", list.size());
+        return Result.ok(res);
     }
 }

@@ -85,4 +85,11 @@ public interface CourseMapper extends BaseMapper<Course> {
      * @return
      */
     List<CourseDTO> queryBySemesterAndCollageName(String semester, String collageName);
+
+    /**
+     * 根据id数组查询
+     * @param ids
+     * @return
+     */
+    List<CourseDTO> queryAllInfoByIds(int[] ids);
 }

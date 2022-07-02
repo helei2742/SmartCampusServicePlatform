@@ -58,4 +58,11 @@ public interface ICourseService extends IService<Course> {
      * @return
      */
     Result queryCSTCourseByCollageName(String collageName);
+
+    /**
+     * 查询所有id中的课程详细信息
+     * @param ids
+     * @return
+     */
+    Result queryAllInfoByIds(int[] ids);
 }

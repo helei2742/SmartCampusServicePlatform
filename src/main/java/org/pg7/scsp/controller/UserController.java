@@ -78,5 +78,14 @@ public class UserController {
 
         return userService.alterUserInfo(userFormDto);
     }
+
+
+    @PostMapping("/queryUserSemester")
+    @ResponseBody
+    public Result queryUserSemester(@RequestBody UserQuery userQuery){
+        //TODO 查询用户的学期
+        return userService.queryUserSemester(userQuery.getUserId());
+    }
+
 }
 

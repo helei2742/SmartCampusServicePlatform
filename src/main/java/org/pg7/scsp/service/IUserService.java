@@ -53,4 +53,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     Result alterUserInfo(UserFormDto userFormDto);
+
+    /**
+     * 查询用户学期
+     * @param userId
+     * @return
+     */
+    Result queryUserSemester(Integer userId);
 }

@@ -362,6 +362,7 @@ public class SeckillCourseOrderServiceImpl extends ServiceImpl<SeckillCourseOrde
         boolean update = update()
                 .set("status", SystemConstants.SECKILL_COURSE_ORDER_STATUSE_CANCEL)
                 .set("update_time",LocalDateTime.now())
+                .set("cancel_time", LocalDateTime.now())
                 .eq("user_id", userId)
                 .eq("course_id", courseId)
                 .eq("status", SystemConstants.SECKILL_COURSE_ORDER_STATUSE_WAIT)

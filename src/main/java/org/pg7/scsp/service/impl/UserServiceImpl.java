@@ -8,6 +8,7 @@ import cn.hutool.json.JSONUtil;
 import org.pg7.scsp.dto.*;
 import org.pg7.scsp.entity.User;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.pg7.scsp.entity.UserCourseRecord;
 import org.pg7.scsp.entity.UserInfo;
 import org.pg7.scsp.mapper.UserMapper;
 import org.pg7.scsp.query.UserQuery;
@@ -25,6 +26,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -40,6 +42,8 @@ import java.util.concurrent.TimeUnit;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private UserCourseRecordServiceImpl userCourseRecordService;
 
     @Resource
     private UserMapper userMapper;
@@ -171,4 +175,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return userInfoDTO == null || StrUtil.isBlank(userInfoDTO.getIdNumber());
     }
 
+
+    @Override
+    public Result queryUserSemester(Integer userId) {
+        List<UserCourseRecord> list = userCourseRecordService.query().select("semester")
+                .eq("user_id", userId).groupBy("semester").list();
+
+        Object[] objects = list.stream().map(UserCourseRecord::getSemester).toArray();
+
+        return Result.ok(objects);
+    }
 }

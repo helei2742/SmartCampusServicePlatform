@@ -129,5 +129,11 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
         return Result.ok(courseDTOs);
     }
-/*------------------------------------------------------------------------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+    @Override
+    public Result queryAllInfoByIds(int[] ids) {
+        List<CourseDTO> list = baseMapper.queryAllInfoByIds(ids);
+        return Result.ok(list);
+    }
 }

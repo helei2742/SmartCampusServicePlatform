@@ -15,15 +15,10 @@
     <select id="queryUserUnPassCredit" resultType="java.util.Map">
         select c.id course_id, c.course_name courseName, c.credit from tb_course c where
 
-                c.id not in (select a.course_id from tb_user_course_record a where a.user_id = 1 and 60 > score group by course_id)
+                c.id not in (select a.course_id from tb_user_course_record a where a.user_id = #{userId} and 60 > score group by course_id)
                 and
-                c.id in (select a.course_id from tb_user_course_record a where a.user_id = 1 group by course_id);
+                c.id in (select a.course_id from tb_user_course_record a where a.user_id = #{userId} group by course_id);
 
     </select>
-
-
-    <insert id="setRetakeCourse" parameterType="java.lang.Integer">
-        insert into tb_retake_course(course_id, user_id) values (#{courseId},#{userId})
-    </insert>
 
 </mapper>

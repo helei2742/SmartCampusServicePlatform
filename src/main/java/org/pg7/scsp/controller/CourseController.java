@@ -2,6 +2,7 @@ package org.pg7.scsp.controller;
 
 
 import org.pg7.scsp.dto.Result;
+import org.pg7.scsp.entity.Course;
 import org.pg7.scsp.query.CourseQuery;
 import org.pg7.scsp.service.ICourseService;
 import org.pg7.scsp.service.IUserCourseRecordService;
@@ -24,6 +25,11 @@ public class CourseController {
     @Autowired
     private ICourseService courseService;
 
+    @PostMapping("/queryByIds")
+    @ResponseBody
+    public Result queryByIds(@RequestBody int[] ids){
+        return courseService.queryAllInfoByIds(ids);
+    }
 
     @PostMapping("/conditionPageQueryCourse")
     @ResponseBody
