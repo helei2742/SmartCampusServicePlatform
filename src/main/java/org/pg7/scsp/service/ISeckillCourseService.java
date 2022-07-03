@@ -28,4 +28,12 @@ public interface ISeckillCourseService extends IService<SeckillCourse> {
      * @return
      */
     Result addSeckillCourseStockToRedis();
+
+    /**
+     * 查询课余量，以及是否选过该课，会先查redis
+     * @param courseId
+     * @return
+     */
+    Result querySeckillCourseStock(Integer courseId,Integer userId);
+
 }

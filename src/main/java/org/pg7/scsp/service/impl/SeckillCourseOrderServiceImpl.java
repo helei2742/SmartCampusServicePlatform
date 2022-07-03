@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.pg7.scsp.dto.Result;
 import org.pg7.scsp.entity.SeckillCourse;
 import org.pg7.scsp.entity.SeckillCourseOrder;
+import org.pg7.scsp.mapper.CourseTimeMapper;
 import org.pg7.scsp.mapper.SeckillCourseOrderMapper;
 import org.pg7.scsp.service.ISeckillCourseOrderService;
 import org.pg7.scsp.service.ISeckillCourseService;
@@ -24,14 +25,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -282,6 +286,19 @@ public class SeckillCourseOrderServiceImpl extends ServiceImpl<SeckillCourseOrde
                 .list();
 
         return Result.ok(list);
+    }
+
+    @Resource
+    private CourseTimeMapper courseTimeMapper;
+    @Override
+    public Result queryUserCourseTime(Integer userId) {
+        List<SeckillCourseOrder> list = query().eq("user_id", userId).eq("status",
+                SystemConstants.SECKILL_COURSE_ORDER_STATUSE_WAIT).list();
+        List<Integer> courseIds = list.stream().map(SeckillCourseOrder::getCourseId)
+                .collect(Collectors.toList());
+
+        List<Integer> res = courseTimeMapper.queryCourseCourseTimeIdBatch(courseIds);
+        return Result.ok(res);
     }
 
 //    ------------------------------------------取消选课 ------------------------------------------

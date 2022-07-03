@@ -45,5 +45,12 @@ public class SeckillCourseOrderController {
         // TODO 取消选课
         return seckillCourseOrderService.cancelSeckillCourseId(userId,courseId);
     }
+
+    @PostMapping("/queryUserCourseTime")
+    @ResponseBody
+    public Result queryUserCourseTime(@RequestParam Integer userId){
+        //TODO 查询用户当前抢到的课程的时间
+        return seckillCourseOrderService.queryUserCourseTime(userId);
+    }
 }
 

@@ -38,5 +38,12 @@ public class SeckillCourseController {
         return seckillCourseService.addSeckillCourseStockToRedis();
     }
 
+    @PostMapping("/querySeckillCourseStock")
+    @ResponseBody
+    public Result querySeckillCourseStock(@RequestParam Integer courseId, @RequestParam Integer userId){
+        //TODO 查询课程的课余量
+        return seckillCourseService.querySeckillCourseStock(courseId, userId);
+    }
+
 }
 

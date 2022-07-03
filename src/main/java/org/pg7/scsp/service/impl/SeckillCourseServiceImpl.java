@@ -1,6 +1,7 @@
 package org.pg7.scsp.service.impl;
 
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.pg7.scsp.dto.Result;
 import org.pg7.scsp.entity.SeckillCourse;
@@ -18,8 +19,11 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -57,5 +61,25 @@ public class SeckillCourseServiceImpl extends ServiceImpl<SeckillCourseMapper, S
 
         return Result.ok(seckillCourses.size());
     }
+
+    @Override
+    public Result querySeckillCourseStock(Integer courseId, Integer userId) {
+        if(courseId == null || userId == null) return Result.fail("缺少参数！");
+
+        String json = stringRedisTemplate.opsForValue().get(RedisConstants.SECKILL_COURSE_STOCK_KEY + courseId);
+        if(StrUtil.isBlank(json)){
+            return Result.fail("没有该课程的选课信息");
+        }
+        Boolean isMember = stringRedisTemplate
+                .opsForSet()
+                .isMember(RedisConstants.SECKILL_COURSE_ORDER_KEY + courseId, userId+"");
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("stock", Integer.parseInt(json));
+        res.put("isSelected", Boolean.TRUE.equals(isMember));
+        return Result.ok(res);
+    }
+
+
 
 }

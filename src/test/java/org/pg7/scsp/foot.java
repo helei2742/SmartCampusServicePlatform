@@ -9,12 +9,17 @@ import org.junit.jupiter.api.Test;
 import org.pg7.scsp.dto.CourseTestFormDTO;
 import org.pg7.scsp.entity.*;
 import org.pg7.scsp.mapper.*;
+import org.pg7.scsp.query.CourseQuery;
+import org.pg7.scsp.service.impl.SeckillCourseOrderServiceImpl;
+import org.pg7.scsp.service.impl.SeckillCourseServiceImpl;
 import org.pg7.scsp.service.impl.TestServiceImpl;
 import org.pg7.scsp.utils.RedisIdWorker;
 import org.pg7.scsp.utils.SemesterUtil;
 import org.pg7.scsp.utils.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -368,9 +373,64 @@ public class foot {
             updateWrapper.eq("course_id", cours.getId());
             int delete = userCourseRecordMapper.delete(updateWrapper);
         }
+
+        //选课信息加到redis中
+        seckillCourseService.addSeckillCourseStockToRedis();
+    }
+    @Autowired
+    SeckillCourseServiceImpl seckillCourseService;
+
+    @Resource
+    private SeckillCourseOrderMapper seckillCourseOrderMapper;
+
+    @Test
+    public void jiesuanSeckillCourse(){
+        //TODO 结算秒杀课程，
+        QueryWrapper<SeckillCourseOrder> orderQueryWrapper = new QueryWrapper<>();
+        orderQueryWrapper.eq("status", SystemConstants.SECKILL_COURSE_ORDER_STATUSE_WAIT);
+        List<SeckillCourseOrder> seckillCourseOrders = seckillCourseOrderMapper.selectList(orderQueryWrapper);
+        for (SeckillCourseOrder seckillCourseOrder : seckillCourseOrders) {
+            Integer userId = seckillCourseOrder.getUserId();
+            Integer courseId = seckillCourseOrder.getCourseId();
+            QueryWrapper<Course> courseQueryWrapper = new QueryWrapper<>();
+            courseQueryWrapper.eq("id", courseId);
+            Course course = courseMapper.selectOne(courseQueryWrapper);
+
+            QueryWrapper<UserCourseRecord> userCourseRecordQueryWrapper = new QueryWrapper<>();
+            userCourseRecordQueryWrapper.eq("user_id", userId)
+                    .eq("course_name", course.getCourseName());
+            Integer count = userCourseRecordMapper.selectCount(userCourseRecordQueryWrapper);
+
+            UserCourseRecord userCourseRecord = new UserCourseRecord();
+            userCourseRecord.setUserId(userId);
+            userCourseRecord.setCourseId(courseId);
+            userCourseRecord.setCourseName(course.getCourseName());
+            userCourseRecord.setScore(0);
+            userCourseRecord.setSemester(course.getSemester());
+            userCourseRecord.setCount(count);
+
+            userCourseRecordMapper.insert(userCourseRecord);
+
+            seckillCourseOrder.setStatus(SystemConstants.SECKILL_COURSE_ORDER_STATUSE_SETTLE);
+            seckillCourseOrder.setSettleTime(LocalDateTime.now());
+            seckillCourseOrder.setUpdateTime(null);
+            seckillCourseOrder.setCreateTime(null);
+            seckillCourseOrder.setUserId(null);
+            seckillCourseOrder.setCourseId(null);
+
+            seckillCourseOrderMapper.updateById(seckillCourseOrder);
+        }
+
+        //删除数据库秒杀课信息
+        seckillCourseMapper.delete(null);
+        //删除redis秒杀课信息
+        Set<String> keys = stringRedisTemplate.keys("seckill:course:*");
+        System.out.println(keys);
+        stringRedisTemplate.delete(keys);
     }
 
-
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
     @Resource
     CourseTestMapper courseTestMapper;
 

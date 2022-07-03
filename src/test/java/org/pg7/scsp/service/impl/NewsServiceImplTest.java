@@ -15,15 +15,15 @@ class NewsServiceImplTest {
     NewsServiceImpl service;
     @Test
     void queryById() throws InterruptedException {
-        for (int i = 0; i < 50; i++) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    System.out.println(service.queryById(13));
-                }
-            }).start();
-
-        }
+//        for (int i = 0; i < 50; i++) {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    System.out.println(service.queryById(13));
+//                }
+//            }).start();
+//
+//        }
         Thread.sleep(100000);
     }
 

@@ -27,6 +27,12 @@ public interface ISeckillCourseOrderService extends IService<SeckillCourseOrder>
      * @return
      */
     Result userSeckillCourseId(Integer userId);
+    /**
+     * 查询用户当前抢到的课程的时间
+     * @param userId
+     * @return
+     */
+    Result queryUserCourseTime(Integer userId);
 
     /**
      * 取消用户当前选课阶段选的课

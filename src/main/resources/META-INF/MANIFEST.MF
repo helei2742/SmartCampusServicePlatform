@@ -1,0 +1,57 @@
+Manifest-Version: 1.0
+Main-Class: org.pg7.scsp.ScspApplication
+Class-Path: spring-boot-2.3.12.RELEASE.jar swagger-annotations-2.1.2.jar
+  jakarta.el-3.0.3.jar jakarta.annotation-api-1.3.5.jar lombok-1.18.20.j
+ ar spring-boot-autoconfigure-2.3.12.RELEASE.jar mybatis-plus-annotation
+ -3.4.3.jar spring-context-support-5.2.15.RELEASE.jar spring-data-common
+ s-2.3.9.RELEASE.jar quartz-2.3.2.jar log4j-to-slf4j-2.13.3.jar spring-j
+ dbc-5.2.15.RELEASE.jar lettuce-core-5.3.7.RELEASE.jar mapstruct-1.3.1.F
+ inal.jar swagger-core-1.5.22.jar jboss-marshalling-2.0.11.Final.jar swa
+ gger-annotations-1.5.20.jar animal-sniffer-annotations-1.17.jar netty-c
+ ommon-4.1.65.Final.jar mybatis-plus-core-3.4.3.jar logback-core-1.2.3.j
+ ar listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar knife
+ 4j-spring-boot-starter-3.0.2.jar jodd-core-5.1.6.jar jul-to-slf4j-1.7.3
+ 0.jar mybatis-plus-3.4.3.jar springfox-bean-validators-3.0.0.jar jsr305
+ -3.0.2.jar spring-core-5.2.15.RELEASE.jar spring-jcl-5.2.15.RELEASE.jar
+  jackson-annotations-2.11.4.jar spring-boot-starter-logging-2.3.12.RELE
+ ASE.jar knife4j-spring-3.0.2.jar jackson-core-2.11.4.jar commons-lang3-
+ 3.10.jar j2objc-annotations-1.1.jar spring-boot-starter-quartz-2.3.12.R
+ ELEASE.jar swagger-models-1.5.20.jar netty-buffer-4.1.65.Final.jar erro
+ r_prone_annotations-2.2.0.jar spring-boot-starter-web-2.3.12.RELEASE.ja
+ r knife4j-spring-ui-3.0.2.jar mchange-commons-java-0.2.19.jar logback-c
+ lassic-1.2.3.jar reactive-streams-1.0.3.jar springfox-data-rest-3.0.0.j
+ ar spring-data-redis-2.3.9.RELEASE.jar springfox-schema-3.0.0.jar sprin
+ g-plugin-core-2.0.0.RELEASE.jar spring-boot-starter-data-redis-2.3.12.R
+ ELEASE.jar cache-api-1.1.1.jar javassist-3.25.0-GA.jar commons-lang-2.4
+ .jar spring-boot-starter-2.3.12.RELEASE.jar springfox-spring-webmvc-3.0
+ .0.jar tomcat-embed-websocket-9.0.46.jar mybatis-3.5.7.jar reactor-core
+ -3.3.17.RELEASE.jar c3p0-0.9.5.5.jar springfox-spi-3.0.0.jar springfox-
+ swagger-common-3.0.0.jar spring-context-5.2.15.RELEASE.jar netty-codec-
+ 4.1.65.Final.jar spring-boot-starter-tomcat-2.3.12.RELEASE.jar spring-b
+ oot-starter-jdbc-2.3.12.RELEASE.jar springfox-spring-web-3.0.0.jar slf4
+ j-api-1.7.30.jar byte-buddy-1.10.22.jar springfox-core-3.0.0.jar tomcat
+ -embed-core-9.0.46.jar spring-data-keyvalue-2.3.9.RELEASE.jar mybatis-p
+ lus-boot-starter-3.4.3.jar spring-tx-5.2.15.RELEASE.jar netty-resolver-
+ dns-4.1.65.Final.jar log4j-api-2.13.3.jar netty-resolver-4.1.65.Final.j
+ ar netty-codec-dns-4.1.65.Final.jar jackson-datatype-jsr310-2.11.4.jar 
+ validation-api-2.0.1.Final.jar spring-expression-5.2.15.RELEASE.jar rxj
+ ava-3.0.12.jar knife4j-core-3.0.2.jar aspectjweaver-1.9.6.jar mysql-con
+ nector-java-8.0.25.jar guava-27.0.1-android.jar mybatis-spring-2.0.6.ja
+ r spring-web-5.2.15.RELEASE.jar swagger-models-2.1.2.jar spring-plugin-
+ metadata-2.0.0.RELEASE.jar knife4j-annotations-3.0.2.jar spring-webmvc-
+ 5.2.15.RELEASE.jar velocity-1.7.jar snakeyaml-1.26.jar spring-aop-5.2.1
+ 5.RELEASE.jar springfox-spring-webflux-3.0.0.jar commons-collections-3.
+ 2.1.jar failureaccess-1.0.1.jar mybatis-plus-generator-3.5.1.jar Hikari
+ CP-3.4.5.jar springfox-swagger2-3.0.0.jar knife4j-spring-boot-autoconfi
+ gure-3.0.2.jar checker-compat-qual-2.5.2.jar jackson-databind-2.11.4.ja
+ r spring-beans-5.2.15.RELEASE.jar netty-transport-4.1.65.Final.jar comm
+ ons-pool2-2.8.1.jar jsqlparser-4.0.jar redisson-3.17.3.jar springfox-oa
+ s-3.0.0.jar classmate-1.5.1.jar jackson-module-parameter-names-2.11.4.j
+ ar jodd-bean-5.1.6.jar spring-boot-starter-json-2.3.12.RELEASE.jar clas
+ sgraph-4.8.83.jar jboss-marshalling-river-2.0.11.Final.jar jackson-data
+ format-yaml-2.11.4.jar mybatis-plus-extension-3.4.3.jar spring-boot-sta
+ rter-aop-2.3.12.RELEASE.jar spring-oxm-5.2.15.RELEASE.jar hutool-all-5.
+ 7.17.jar spring-boot-devtools-2.3.12.RELEASE.jar springfox-boot-starter
+ -3.0.0.jar jackson-datatype-jdk8-2.11.4.jar netty-handler-4.1.65.Final.
+ jar springfox-swagger-ui-3.0.0.jar
+
