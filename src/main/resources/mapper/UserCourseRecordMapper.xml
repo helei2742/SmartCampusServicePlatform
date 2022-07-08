@@ -2,12 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.pg7.scsp.mapper.UserCourseRecordMapper">
 
-    <select id="queryUserCredit" resultType="java.util.Map">
+    <select id="queryUserCredit" resultType="java.util.Map" parameterType="org.pg7.scsp.query.CourseQuery">
         select c.id course_id, c.course_name courseName, c.credit
         from tb_course  c
+
         where c.id in (select a.course_id
                        from tb_user_course_record a
                        where a.user_id = #{userId}
+                       <if test="semester != null">
+                           and a.semester = #{semester}
+                       </if>
                        and score >= 60
                        group by  course_id)
 
@@ -15,9 +19,15 @@
     <select id="queryUserUnPassCredit" resultType="java.util.Map">
         select c.id course_id, c.course_name courseName, c.credit from tb_course c where
 
-                c.id not in (select a.course_id from tb_user_course_record a where a.user_id = #{userId} and 60 > score group by course_id)
+                c.id not in (select a.course_id from tb_user_course_record a where a.user_id = #{userId}
+                                                                               <if test="semester != null">
+                                                                                    and a.semester = #{semester}
+                                                                                </if> and score >= 60 group by course_id)
                 and
-                c.id in (select a.course_id from tb_user_course_record a where a.user_id = #{userId} group by course_id);
+                c.id in (select a.course_id from tb_user_course_record a where a.user_id = #{userId}
+                                                                           <if test="semester != null">
+                                                                                and a.semester = #{semester}
+                                                                            </if> group by course_id);
 
     </select>
 

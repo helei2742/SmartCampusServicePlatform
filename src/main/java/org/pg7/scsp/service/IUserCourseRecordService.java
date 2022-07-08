@@ -68,6 +68,7 @@ public interface IUserCourseRecordService extends IService<UserCourseRecord> {
 
     /**
      * 查询用户学分情况（已修学分,与未通过的学分情况）
+     *       可传入参数semester 查询特定学期
      * @param courseQuery
      * @return
      */
@@ -75,6 +76,7 @@ public interface IUserCourseRecordService extends IService<UserCourseRecord> {
 
     /**
      * 查询用户通过总学分
+     *       可传入参数semester 查询特定学期
      * @param courseQuery
      * @return
      */
@@ -82,6 +84,7 @@ public interface IUserCourseRecordService extends IService<UserCourseRecord> {
 
     /**
      * 查询用户未通过的总学分
+     *      可传入参数semester 查询特定学期
      * @param courseQuery
      * @return
      */

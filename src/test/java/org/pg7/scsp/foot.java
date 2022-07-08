@@ -13,6 +13,8 @@ import org.pg7.scsp.query.CourseQuery;
 import org.pg7.scsp.service.impl.SeckillCourseOrderServiceImpl;
 import org.pg7.scsp.service.impl.SeckillCourseServiceImpl;
 import org.pg7.scsp.service.impl.TestServiceImpl;
+import org.pg7.scsp.service.impl.UserServiceImpl;
+import org.pg7.scsp.utils.PasswordEncoder;
 import org.pg7.scsp.utils.RedisIdWorker;
 import org.pg7.scsp.utils.SemesterUtil;
 import org.pg7.scsp.utils.SystemConstants;
@@ -297,6 +299,18 @@ public class foot {
         System.out.println("插入选课记录："+userCourseRecords.size());
     }
 
+    @Autowired
+    UserServiceImpl userService;
+    @Test
+    public void encodeUserPwd(){
+        List<User> users = userMapper.selectList(null);
+        for (User user : users) {
+            User u = new User();
+            u.setId(user.getId());
+            u.setPassword(PasswordEncoder.encode(user.getPassword()));
+            userMapper.updateById(u);
+        }
+    }
 
     @Test
     public void setRetakeCourse(){

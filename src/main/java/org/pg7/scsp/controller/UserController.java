@@ -2,10 +2,13 @@ package org.pg7.scsp.controller;
 
 
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
 import org.pg7.scsp.dto.LoginFormDTO;
-import org.pg7.scsp.dto.RegisterFormDTO;
 import org.pg7.scsp.dto.Result;
 import org.pg7.scsp.dto.UserFormDto;
+import org.pg7.scsp.entity.User;
+import org.pg7.scsp.entity.UserInfo;
 import org.pg7.scsp.query.UserQuery;
 import org.pg7.scsp.service.IUserService;
 import org.pg7.scsp.service.impl.UserServiceImpl;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * <p>
@@ -62,11 +66,18 @@ public class UserController {
     }
 
 
-    @PostMapping("/register")
+    @PostMapping("/register/{role}")
     @ResponseBody
-    public Result register(@RequestBody RegisterFormDTO registerFormDTO){
+    public Result register(@RequestBody Map<String, Object> map,@PathVariable("role")Integer roleId){
         //TODO 用户注册
-        return userService.register(registerFormDTO);
+        User user = BeanUtil.mapToBean(map, User.class, false);
+        UserInfo userInfo = BeanUtil.mapToBean(map, UserInfo.class, false);
+        return userService.register(user, userInfo, roleId);
+    }
+    @PostMapping("/logout/{token}")
+    @ResponseBody
+    public void logout(@PathVariable("token")String token){
+        userService.logout(token);
     }
 
     @PostMapping("/userInfo")

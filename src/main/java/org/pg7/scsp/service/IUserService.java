@@ -2,10 +2,10 @@ package org.pg7.scsp.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.pg7.scsp.dto.LoginFormDTO;
-import org.pg7.scsp.dto.RegisterFormDTO;
 import org.pg7.scsp.dto.Result;
 import org.pg7.scsp.dto.UserFormDto;
 import org.pg7.scsp.entity.User;
+import org.pg7.scsp.entity.UserInfo;
 import org.pg7.scsp.query.UserQuery;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,10 +35,9 @@ public interface IUserService extends IService<User> {
 
     /**
      * 注册
-     * @param registerFormDTO
      * @return
      */
-    Result register(RegisterFormDTO registerFormDTO);
+    Result register(User user, UserInfo userInfo, Integer roleId);
 
     /**
      * 查询用户所有基本信息
@@ -67,4 +66,10 @@ public interface IUserService extends IService<User> {
      * @return
      */
     Result validate(String authorization);
+
+    /**
+     * 登出，删除redis里到键
+     * @param token
+     */
+    void logout(String token);
 }

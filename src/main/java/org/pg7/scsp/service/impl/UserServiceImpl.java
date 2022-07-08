@@ -14,13 +14,12 @@ import org.pg7.scsp.mapper.UserMapper;
 import org.pg7.scsp.query.UserQuery;
 import org.pg7.scsp.service.IUserInfoService;
 import org.pg7.scsp.service.IUserService;
-import org.pg7.scsp.utils.RedisConstants;
+import org.pg7.scsp.utils.*;
 
-import org.pg7.scsp.utils.SystemConstants;
-import org.pg7.scsp.utils.ValidateCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -94,9 +93,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("学号或密码错误！");
         }
 
-        User user = query().eq("id_number", idNumber).eq("password", password).one();
+        User user = query().eq("id_number", idNumber).one();
 
-        if(user == null){
+        if(!PasswordEncoder.matches(user.getPassword(), password)){
             return Result.fail("学号或密码错误！");
         }
 
@@ -115,8 +114,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Result register(RegisterFormDTO registerFormDTO) {
-        return null;
+    @Transactional
+    public Result register(User user, UserInfo userInfo, Integer roleId) {
+        String password = user.getPassword();
+        if(StrUtil.isBlank(user.getIdNumber())||StrUtil.isBlank(password)){
+            return Result.fail("用户名或密码不能含空");
+        }
+        if(password.length() < 6 || password.length() > 16){
+            return Result.fail("密码长度需在6到16位");
+        }
+        Integer count = query().eq("id_number", user.getIdNumber()).count();
+        if(count != 0) {
+            return Result.fail("该id号已被使用");
+        }
+
+        save(user);
+        User one = query().eq("id_number", user.getIdNumber()).select("id").one();
+        Integer userId = one.getId();
+        if (userId == null){
+            return Result.fail("发生错误，创建用户信息失败");
+        }
+        userInfo.setUserId(userId);
+        boolean save = userInfoService.save(userInfo);
+        if(!save){
+            return Result.fail("发生错误，创建用户信息失败");
+        }
+        Integer integer = userMapper.setUserRole(userId, roleId);
+        if(integer != 1){
+            return Result.fail("发生错误，创建用户信息失败");
+        }
+        UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
+        userDTO.setId(userId);
+        return Result.ok(userDTO);
     }
 
     @Override
@@ -152,6 +181,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     IUserInfoService userInfoService;
 
     @Override
+    @Transactional
     public Result alterUserInfo(UserFormDto userFormDto) {
         Integer userId = userFormDto.getUserId();
         if(userId == null){
@@ -163,6 +193,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("不存在该用户");
         }
 
+        if(!RegexUtils.isEmailInvalid(userFormDto.getEmail())){
+            return Result.fail("邮箱格式不正确");
+        }
         UserInfo userInfo = BeanUtil.copyProperties(userFormDto, UserInfo.class);
         boolean b = userInfoService.updateById(userInfo);
         if(!b){
@@ -198,5 +231,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         UserDTO userDTO = JSONUtil.toBean(json, UserDTO.class);
         return Result.ok(userDTO);
+    }
+
+    @Override
+    public void logout(String token) {
+        stringRedisTemplate.delete(RedisConstants.LOGIN_USER_KEY + token);
     }
 }

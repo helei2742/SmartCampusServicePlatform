@@ -145,6 +145,7 @@ public class UserCourseRecordServiceImpl extends ServiceImpl<UserCourseRecordMap
         Set<String> set = new HashSet<>();
         unPass.forEach(u->set.add(u.getCourseName()));
         pass.forEach(u->set.remove(u.getCourseName()));
+
         return Result.ok(set);
     }
 
@@ -156,8 +157,8 @@ public class UserCourseRecordServiceImpl extends ServiceImpl<UserCourseRecordMap
         if(userId == null){
             return Result.fail("用户id错误！");
         }
-        List<Map<String, Object>> pass = baseMapper.queryUserCredit(userId);
-        List<Map<String, Object>> unPass = baseMapper.queryUserUnPassCredit(userId);
+        List<Map<String, Object>> pass = baseMapper.queryUserCredit(courseQuery);
+        List<Map<String, Object>> unPass = baseMapper.queryUserUnPassCredit(courseQuery);
         Map<String, Object> res = new HashMap<>();
         res.put("pass", pass);
         res.put("unPass", unPass);
@@ -174,7 +175,7 @@ public class UserCourseRecordServiceImpl extends ServiceImpl<UserCourseRecordMap
         if(userId == null){
             return Result.fail("用户id错误！");
         }
-        List<Map<String, Object>> list = baseMapper.queryUserCredit(userId);
+        List<Map<String, Object>> list = baseMapper.queryUserCredit(courseQuery);
         final float[] total = {0};
         list.forEach(m->{total[0] = (total[0] +  (float)m.get("credit"));});
 
@@ -193,7 +194,7 @@ public class UserCourseRecordServiceImpl extends ServiceImpl<UserCourseRecordMap
             return Result.fail("用户id错误！");
         }
 
-        List<Map<String, Object>> list = baseMapper.queryUserUnPassCredit(userId);
+        List<Map<String, Object>> list = baseMapper.queryUserUnPassCredit(courseQuery);
         final float[] total = {0};
         list.forEach(m->{total[0] = (total[0] +  (float)m.get("credit"));});
 

@@ -13,7 +13,7 @@ public class RedisConstants {
     public static final Long LOGIN_CHECKCODE_TTL = 2L;
     public static final String LOGIN_USER_KEY = "login:user:";
     /**
-     * 单位fen
+     * 单位tian
      */
     public static final Long LOGIN_USER_TTL = 7L;
 
