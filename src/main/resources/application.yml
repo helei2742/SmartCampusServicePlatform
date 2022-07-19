@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: 9002
   servlet:
     context-path: /pg07
 
@@ -20,6 +20,12 @@ spring:
         max-idle: 10
         min-idle: 1
         time-between-eviction-runs: 10s
+  rabbitmq:
+    host: 81.68.94.6
+    port: 5672
+    username: itcast
+    password: 123321
+    virtual-host: /
   jackson:
     default-property-inclusion: non_null
   devtools:

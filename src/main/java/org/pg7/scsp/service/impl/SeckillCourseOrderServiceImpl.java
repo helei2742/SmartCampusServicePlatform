@@ -10,11 +10,13 @@ import org.pg7.scsp.mapper.CourseTimeMapper;
 import org.pg7.scsp.mapper.SeckillCourseOrderMapper;
 import org.pg7.scsp.service.ISeckillCourseOrderService;
 import org.pg7.scsp.service.ISeckillCourseService;
+import org.pg7.scsp.utils.MQConstants;
 import org.pg7.scsp.utils.RedisConstants;
 import org.pg7.scsp.utils.RedisIdWorker;
 import org.pg7.scsp.utils.SystemConstants;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -57,6 +59,9 @@ public class SeckillCourseOrderServiceImpl extends ServiceImpl<SeckillCourseOrde
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     /**
      * 类加载完成就开始执行保存选课任务。
@@ -185,7 +190,7 @@ public class SeckillCourseOrderServiceImpl extends ServiceImpl<SeckillCourseOrde
         if(proxy == null){
             proxy = (SeckillCourseOrderServiceImpl) AopContext.currentProxy();
         }
-
+        rabbitTemplate.convertAndSend(MQConstants.SECKILL_COURSE_EXCHANGE,MQConstants.SECKILL_COURSE_KEY, orderId);
 
         //返回记录id
         return Result.ok(orderId);
